@@ -8,6 +8,16 @@
 body {
   background: rgb(4, 7, 11);
   color: white;
+  font-family: "Times New Roman", serif;
+}
+
+/* Force Times New Roman on all Material UI components */
+.MuiTypography-root,
+.MuiButton-root,
+.MuiPaper-root,
+.MuiOutlinedInput-root,
+.MuiInputLabel-root {
+  font-family: "Times New Roman", serif !important;
 }
 
 /* LOGIN PAGE */
@@ -223,4 +233,354 @@ body {
   cursor: pointer;
 
   margin-left: 5px;
+}
+/* DASHBOARD */
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: rgb(4, 7, 11);
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 240px;
+  background: #081018;
+  padding: 30px 20px;
+  border-right: 1px solid #13202c;
+}
+
+.sidebar h2 {
+  color: #38bdf8;
+  margin-bottom: 40px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #cbd5e1;
+  transition: 0.3s;
+}
+
+.sidebar li:hover,
+.sidebar .active {
+  background: #0f172a;
+  color: white;
+}
+
+/* MAIN */
+
+.dashboard-main {
+  flex: 1;
+  padding: 30px;
+}
+
+/* TOPBAR */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.topbar h1 {
+  font-size: 36px;
+}
+
+.topbar button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  background: linear-gradient(
+    to right,
+    #0ea5e9,
+    #2563eb
+  );
+
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* CARDS */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.dashboard-card {
+  background: radial-gradient(
+    at 50% 50%,
+    hsla(210, 100%, 16%, 0.5),
+    hsl(220, 30%, 5%)
+  ) !important;
+
+  color: white !important;
+
+  border-radius: 18px !important;
+
+  border: 1px solid #1e293b;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-icon {
+  color: #38bdf8;
+  font-size: 35px;
+}
+
+.card-value {
+  font-weight: bold !important;
+}
+
+.card-title {
+  margin-top: 15px !important;
+  color: #cbd5e1;
+}
+
+/* RECENT */
+
+.recent-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  margin-top: 30px;
+}
+
+.recent-card {
+  background: #081018;
+  padding: 25px;
+  border-radius: 18px;
+  border: 1px solid #1e293b;
+}
+
+.recent-card h2 {
+  margin-bottom: 20px;
+  color: #38bdf8;
+}
+
+.recent-card p {
+  margin-bottom: 12px;
+  color: #cbd5e1;
+}
+/* =========================
+   REPORT PAGE
+========================= */
+
+.report-page {
+  padding: 35px;
+  min-height: 100vh;
+  background: rgb(4, 7, 11);
+  color: white;
+}
+
+/* HEADER */
+
+.report-header {
+  margin-bottom: 30px;
+}
+
+.report-title {
+  color: white;
+  font-weight: bold !important;
+  margin-bottom: 8px !important;
+}
+
+.report-subtitle {
+  color: rgba(255,255,255,0.7);
+}
+
+/* SECTION */
+
+.report-section {
+  padding: 30px;
+  border-radius: 18px !important;
+  margin-bottom: 30px;
+
+  background:
+    radial-gradient(
+      at 50% 50%,
+      hsla(210, 100%, 16%, 0.35),
+      hsl(220, 30%, 5%)
+    ) !important;
+
+  border: 1px solid rgba(0,191,255,0.15);
+
+  box-shadow:
+    rgba(9,11,17,0.5) 0px 5px 15px 0px,
+    rgba(19,23,32,0.08) 0px 15px 35px -5px !important;
+}
+
+.section-title {
+  margin-bottom: 25px !important;
+  color: white;
+  font-weight: bold !important;
+}
+
+/* FORM GRID */
+
+.report-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 25px;
+}
+
+/* MATERIAL UI INPUT */
+
+.custom-input .MuiOutlinedInput-root {
+  color: white !important;
+  border-radius: 12px !important;
+  font-family: "Times New Roman", serif !important;
+}
+
+.custom-input .MuiOutlinedInput-input {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
+
+.custom-input .MuiInputLabel-root {
+  color: rgba(255,255,255,0.72) !important;
+  font-family: "Times New Roman", serif !important;
+}
+
+.custom-input .MuiInputLabel-root.Mui-focused {
+  color: #00bfff !important;
+}
+
+.custom-input .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+.custom-input:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #00bfff !important;
+}
+
+.custom-input .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #00bfff !important;
+}
+
+/* MONTH PICKER ICON */
+
+input[type="month"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+input[type="month"] {
+  color-scheme: light dark;
+}
+
+input[type="month"]::-webkit-input-placeholder {
+  color: transparent;
+}
+
+input[type="month"]::placeholder {
+  color: transparent;
+}
+
+/* Hide dashes in MUI month input */
+.custom-input input[type="month"] {
+  text-indent: -9999px;
+}
+
+.custom-input input[type="month"]::-webkit-calendar-picker-indicator {
+  position: relative;
+  left: 9999px;
+}
+
+/* UPLOAD BOX */
+
+.upload-box {
+  border: 2px dashed rgba(0,191,255,0.25);
+
+  border-radius: 18px;
+
+  padding: 70px 30px;
+
+  text-align: center;
+
+  transition: 0.3s;
+
+  background-color: rgba(255,255,255,0.02);
+}
+
+.upload-box:hover {
+  border-color: #00bfff;
+  background-color: rgba(0,191,255,0.04);
+}
+
+.upload-icon {
+  font-size: 70px !important;
+  color: #00bfff;
+  margin-bottom: 20px;
+}
+
+.upload-title {
+  font-size: 28px !important;
+  font-weight: bold !important;
+  margin-bottom: 12px !important;
+  color: white;
+}
+
+.upload-subtitle {
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 25px !important;
+}
+
+/* BUTTONS */
+
+.upload-btn,
+.primary-btn {
+  background:
+    linear-gradient(
+      to right,
+      #007fff,
+      #00bfff
+    ) !important;
+
+  color: white !important;
+
+  padding: 10px 24px !important;
+
+  border-radius: 10px !important;
+
+  text-transform: none !important;
+
+  font-weight: bold !important;
+}
+
+.secondary-btn {
+  border-color: #00bfff !important;
+  color: #00bfff !important;
+
+  border-radius: 10px !important;
+
+  text-transform: none !important;
+
+  padding: 10px 24px !important;
+}
+
+/* ACTIONS */
+
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
 }

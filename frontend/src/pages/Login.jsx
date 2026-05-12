@@ -13,10 +13,18 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (email && password) {
+    const ADMIN_EMAIL="admin@gmail.com";
+    const ADMIN_PASSWORD="admin123";
+
+
+    if (email===ADMIN_EMAIL && password===ADMIN_PASSWORD) {
       navigate("/dashboard");
-    } else {
+    }
+    else if(!email || !password){
       alert("Please enter email and password");
+    } 
+    else {
+      alert("Invalid email or password. Please try again.");
     }
   };
 
