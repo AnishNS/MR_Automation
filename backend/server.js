@@ -11,7 +11,10 @@ app.use(express.json());
 app.use("/uploads",
     express.static(path.join(__dirname, "uploads"))
 );
-
+app.use(
+  "/generated-reports",
+  express.static(path.join(__dirname, "generated-reports"))
+);
 /* ROUTES */
 
 const uploadRoutes = require("./routes/uploadRoutes");

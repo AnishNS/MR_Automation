@@ -431,6 +431,20 @@ services/analytics/comparisonEngine.js
         3.calculate percentage growth
         4.generate comparison metrics
 
+services/analytics/instagramAnalytics.js
+    → Instagram-specific analytics
+    → Reels performance
+    → Reach analytics
+    → Engagement insights
+    → Best post detection
+services/analytics/seoAnalytics.js
+
+    → SEO-specific analytics
+    → Organic traffic summaries
+    → Keyword growth
+    → Technical SEO summaries
+    → GBP analytics
+
 Chart Services
 services/charts/chartBuilder.js
     =>Responsibilities:
