@@ -1,16 +1,32 @@
-const drawSEOSection = (doc, seoData) => {
+const drawChartBlock = require("../components/chartBlock");
+const drawPageHeader = require("../components/pageHeader");
+
+const {
+  generateSEOBarChartImage,
+} = require("../charts/seoChartGenerator");
+const drawSEOSection = async(doc, seoData) => {
   if (!seoData) return;
 
   doc.addPage();
 
-  doc
-    .fontSize(24)
-    .fillColor("#111111")
-    .text("SEO Performance");
-
+  drawPageHeader(
+    doc,
+    "SEO Performance",
+    " Monthly SEO analytics overview"
+  );
   doc.moveDown(1);
 
   const summaries = seoData.analytics?.clientSummaries || [];
+  const chartLabels = summaries.map((client) => client.clientName);
+  const chartValues = summaries.map((client) =>
+    Number(client.organicTraffic) || 0
+  );
+
+  const chartBuffer = await generateSEOBarChartImage(
+    chartLabels,
+    chartValues,
+    "SEO Organic Traffic Overview"
+  );
 
   if (!summaries.length) {
     doc
@@ -49,6 +65,16 @@ const drawSEOSection = (doc, seoData) => {
 
     doc.moveDown(1.5);
   });
+  doc.addPage();
+
+doc
+  .fontSize(22)
+  .fillColor("#111111")
+  .text("SEO Traffic Chart");
+
+doc.moveDown(1);
+
+drawChartBlock(doc, chartBuffer, 50, 140, 500);
 };
 
 module.exports = drawSEOSection;

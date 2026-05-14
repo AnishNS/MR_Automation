@@ -1,3 +1,10 @@
+const { compareMetric } = require("./monthComparisonEngine");
+const {
+  generateInstagramInsights,
+} = require("../insights/instagramInsightsGenerator");
+const {
+  generateInstagramRecommendations,
+} = require("../recommendations/instagramRecommendationEngine");
 const generateInstagramAnalytics = (posts = []) => {
   const totalPosts = posts.length;
 
@@ -64,6 +71,37 @@ const generateInstagramAnalytics = (posts = []) => {
 
     return acc;
   }, {});
+  const comparisons = {
+  views: compareMetric("Views", totals.views, 0),
+  reach: compareMetric("Reach", totals.reach, 0),
+  likes: compareMetric("Likes", totals.likes, 0),
+  engagement: compareMetric("Engagement", totalEngagement, 0),
+  };
+  const insights = generateInstagramInsights({
+    summary: {
+      totalPosts,
+      totalViews: totals.views,
+      totalReach: totals.reach,
+      totalLikes: totals.likes,
+      totalShares: totals.shares,
+      totalComments: totals.comments,
+      totalSaves: totals.saves,
+      totalFollows: totals.follows,
+      totalEngagement,
+      engagementRate,
+      averageViews,
+      averageReach,
+    },
+    bestPost,
+    postTypeCounts,
+  });
+  const recommendations = generateInstagramRecommendations({
+    summary: {
+      totalPosts,
+      engagementRate,
+    },
+    bestPost,
+  });
 
   return {
     platform: "instagram",
@@ -82,9 +120,11 @@ const generateInstagramAnalytics = (posts = []) => {
       averageViews,
       averageReach,
     },
-
+    
     bestPost,
-
+    comparisons,
+    insights,
+    recommendations,
     postTypeCounts,
   };
 };

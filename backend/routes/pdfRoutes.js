@@ -25,6 +25,38 @@ router.get("/test", async (req, res) => {
         reach: 884,
         engagement: 138,
       },
+      postTypeCounts: {
+        "IG image": 2,
+        "IG reel": 8,
+        "IG carousel": 5,
+    },
+      insights: [
+      "Instagram published 15 posts this month, generating 9225 total views and 5834 total reach.",
+      "The overall engagement rate is 8.19%, with 478 total engagements.",
+      "The best performing post was an IG reel with 1418 views, 884 reach, and 138 engagements.",
+    ],
+    recommendations: [
+      "Continue producing high-engagement content formats that are already performing well.",
+      "Reels are currently the best-performing content format and should remain a primary content focus.",
+      "Track content performance monthly to identify trends and improve future campaign planning.",
+    ],
+    comparisons: {
+  views: {
+    label: "Views",
+    previous: 7000,
+    current: 9225,
+    difference: 2225,
+    trend: "increase",
+  },
+
+  reach: {
+    label: "Reach",
+    previous: 4000,
+    current: 5834,
+    difference: 1834,
+    trend: "increase",
+  },
+},
     },
   },
   seo: {
@@ -41,8 +73,44 @@ router.get("/test", async (req, res) => {
         calls: 72,
         directionRequests: 41,
         reviews: 12,
+        comparisons: {
+    organicTraffic: {
+      label: "Organic Traffic",
+      previous: 80,
+      current: 120,
+      difference: 40,
+      trend: "increase",
+    },
+
+    impressions: {
+      label: "Impressions",
+      previous: 5000,
+      current: 8200,
+      difference: 3200,
+      trend: "increase",
+    },
+
+    clicks: {
+      label: "Organic Clicks",
+      previous: 210,
+      current: 420,
+      difference: 210,
+      trend: "increase",
+    },
+  },
       },
     ],
+    recommendations: [
+      {
+        clientName: "StyleWell Interior",
+        recommendations: [
+          "Continue optimizing high-performing pages to maintain organic traffic momentum.",
+          "Focus on keyword optimization and internal linking to improve average ranking position.",
+          "Track keyword rankings and search performance monthly for long-term SEO growth analysis.",
+        ],
+      },
+    ],
+      
   },
 },
 });

@@ -16,6 +16,13 @@ const { assembleReport } = require("../services/reports/reportAssembler");
 const { groupByClient } = require("../services/clients/clientDataGrouper");
 const { buildClientReport } = require("../services/clients/clientReportBuilder");
 
+const {
+  assembleClientReport,
+} = require("../services/reports/clientReportAssembler");
+const {
+  generateClientPdfReport,
+} = require("../services/reports/clientPdfReportGenerator");
+
 const processSingleFile = async (file) => {
   const filePath = file.path;
   const ext = path.extname(file.originalname).toLowerCase();
@@ -97,8 +104,13 @@ const uploadFile = async (req, res) => {
     const clients = groupByClient(processedFiles);
 
     const clientReports = clients.map((client) =>
-      buildClientReport(client)
+      assembleClientReport(client)
     );
+    const generatedPdfReports = [];
+    for (const clientReport of clientReports) {
+      const pdfReport = await generateClientPdfReport(clientReport);
+      generatedPdfReports.push(pdfReport);
+    }
 
     res.json({
       success: true,
@@ -107,6 +119,7 @@ const uploadFile = async (req, res) => {
       processedFiles,
       clients,
       clientReports,
+      generatedPdfReports,
     });
   } catch (error) {
     res.status(500).json({

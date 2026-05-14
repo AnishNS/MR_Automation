@@ -1,3 +1,4 @@
+const drawPageHeader = require("../components/pageHeader");
 const {
   addSectionTitle,
   addSubTitle,
@@ -7,8 +8,12 @@ const {
 
 const drawConclusionSection = (doc) => {
   doc.addPage();
+  drawPageHeader(
+    doc,
+    "Conclusion & Next Steps",
+    "Final monthly performance summary"
+    );
 
-  addSectionTitle(doc, "Conclusion & Next Steps");
 
   addParagraph(
     doc,
