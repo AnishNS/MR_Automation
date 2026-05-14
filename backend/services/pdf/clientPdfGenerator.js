@@ -8,6 +8,9 @@ const drawServiceOverview = require("./sections/serviceOverviewSection");
 const drawInstagramSection = require("./sections/instagramSection");
 const drawSEOSection = require("./sections/seoSection");
 const drawConclusionSection = require("./sections/conclusionSection");
+const drawInsightsSection = require("./sections/insightsSection");
+const drawRecommendationsSection = require("./sections/recommendationsSection");
+const drawComparisonSection = require("./sections/comparisonSection");
 
 const generateClientPdf = async (reportData) => {
   return new Promise(async(resolve, reject) => {
@@ -33,8 +36,11 @@ const generateClientPdf = async (reportData) => {
       drawCoverPage(doc, reportData);
       drawExecutiveSummary(doc, reportData);
       drawServiceOverview(doc, reportData);
+      drawInsightsSection(doc, reportData);
+      drawRecommendationsSection(doc, reportData);
+      drawComparisonSection(doc, reportData);
       await drawInstagramSection(doc, reportData.instagram);
-      drawSEOSection(doc, reportData.seo);
+      await drawSEOSection(doc, reportData.seo);
       drawConclusionSection(doc, reportData);
 
       doc.end();

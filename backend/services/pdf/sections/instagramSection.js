@@ -4,15 +4,20 @@ const drawChartBlock = require("../components/chartBlock");
 const {
   generateBarChartImage,
 } = require("../charts/chartImageGenerator");
+const {
+  generatePieChartImage,
+} = require("../charts/pieChartGenerator");
+const drawPageHeader = require("../components/pageHeader");
 const drawInstagramSection = async (doc, instagramData) => {
   if (!instagramData) return;
 
   doc.addPage();
 
-  doc
-    .fontSize(24)
-    .fillColor("#111111")
-    .text("Instagram Performance");
+  drawPageHeader(
+    doc,
+    "Instagram Performance",
+    "Monthly Instagram analytics overview"
+  );
 
   doc.moveDown(1);
 
@@ -129,6 +134,30 @@ doc.moveDown(12);
     doc.text(`Reach: ${bestPost.reach || 0}`);
     doc.text(`Engagement: ${bestPost.engagement || 0}`);
   }
+  const postTypeCounts =
+  instagramData.analytics?.postTypeCounts || {};
+
+const pieLabels = Object.keys(postTypeCounts);
+const pieValues = Object.values(postTypeCounts);
+
+if (pieLabels.length > 0) {
+  const pieChartBuffer = await generatePieChartImage(
+    pieLabels,
+    pieValues,
+    "Post Type Distribution"
+  );
+
+  doc.addPage();
+
+  doc
+    .fontSize(22)
+    .fillColor("#111111")
+    .text("Instagram Content Mix");
+
+  doc.moveDown(1);
+
+  drawChartBlock(doc, pieChartBuffer, 70, 140, 450);
+}
 };
 
 module.exports = drawInstagramSection;
