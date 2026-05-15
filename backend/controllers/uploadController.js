@@ -22,7 +22,15 @@ const {
 const {
   generateClientPdfReport,
 } = require("../services/reports/clientPdfReportGenerator");
+const {
+  saveProcessedReport,
+} = require("../services/database/saveProcessedReport");
 
+const normalizeClientText = (value = "") =>
+  String(value)
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .trim();
 const processSingleFile = async (file) => {
   const filePath = file.path;
   const ext = path.extname(file.originalname).toLowerCase();
@@ -86,6 +94,9 @@ const processSingleFile = async (file) => {
 const uploadFile = async (req, res) => {
   try {
     const files = req.files || [];
+    const month = req.body.month || null;
+    const year = req.body.year || null;
+    const selectedClientName = req.body.selectedClientName || null;
 
     if (!files.length) {
       return res.status(400).json({
@@ -101,15 +112,39 @@ const uploadFile = async (req, res) => {
       processedFiles.push(processedFile);
     }
 
-    const clients = groupByClient(processedFiles);
+    let clients = groupByClient(processedFiles);
+    if (selectedClientName) {
+      clients = clients.filter(
+        (client) =>
+          normalizeClientText(client.clientName) ===
+          normalizeClientText(selectedClientName)
+      );
+    }
+    if (!clients.length) {
+      return res.status(404).json({
+        success: false,
+        message: `No data found for selected client: ${selectedClientName}`,
+      });
+    }
 
     const clientReports = clients.map((client) =>
-      assembleClientReport(client)
+      assembleClientReport({
+        ...client,
+        month,
+        year,
+      })
     );
+
     const generatedPdfReports = [];
+    const savedDatabaseReports = [];
     for (const clientReport of clientReports) {
       const pdfReport = await generateClientPdfReport(clientReport);
       generatedPdfReports.push(pdfReport);
+      const savedReport = await saveProcessedReport({
+        clientReport,
+        pdfReport,
+      });
+      savedDatabaseReports.push(savedReport);
     }
 
     res.json({
@@ -120,6 +155,7 @@ const uploadFile = async (req, res) => {
       clients,
       clientReports,
       generatedPdfReports,
+      savedDatabaseReports,
     });
   } catch (error) {
     res.status(500).json({

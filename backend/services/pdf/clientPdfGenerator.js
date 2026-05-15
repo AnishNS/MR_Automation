@@ -11,6 +11,7 @@ const drawConclusionSection = require("./sections/conclusionSection");
 const drawInsightsSection = require("./sections/insightsSection");
 const drawRecommendationsSection = require("./sections/recommendationsSection");
 const drawComparisonSection = require("./sections/comparisonSection");
+const drawPageFooter = require("../pdf/components/pageFooter");
 
 const generateClientPdf = async (reportData) => {
   return new Promise(async(resolve, reject) => {

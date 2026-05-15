@@ -7,6 +7,9 @@ const assembleClientReport = (client) => {
 
     clientName: client.clientName,
 
+    month: client.month,
+    year: client.year,
+
     generatedAt: new Date().toISOString(),
 
     services: serviceNames,
