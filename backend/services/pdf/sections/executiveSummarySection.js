@@ -1,40 +1,73 @@
-const drawExecutiveSummary = (doc, reportData) => {
+const drawExecutiveSummary = (doc, reportData = {}) => {
   doc.addPage();
 
-  doc
-    .fontSize(24)
-    .fillColor("#111111")
-    .text("Executive Summary");
+  const pageWidth = doc.page.width;
+  const clientName = reportData.clientName || "Client";
+  const reportMonth = reportData.month || "";
+  const reportYear = reportData.year || "";
+  const services = Array.isArray(reportData.services)
+    ? reportData.services
+    : [];
 
-  doc.moveDown(1);
+  doc.rect(0, 0, pageWidth, 110).fill("#0f172a");
 
   doc
+    .fillColor("#ffffff")
+    .fontSize(28)
+    .text("Executive Summary", 50, 45);
+
+  doc
+    .fillColor("#374151")
     .fontSize(13)
-    .fillColor("#444444")
     .text(
-      "This report provides a comprehensive overview of the client's monthly digital marketing performance, including available service data, KPI summaries, campaign activity, SEO progress, social media performance, and upcoming strategic focus areas.",
+      `This report provides a comprehensive overview of ${clientName}'s monthly digital marketing performance for ${reportMonth} ${reportYear}. The report includes platform-wise analytics, performance insights, strategic recommendations, and month-to-month growth analysis across all active marketing services.`,
+      50,
+      150,
       {
-        lineGap: 6,
+        width: 500,
+        lineGap: 8,
+        align: "justify",
       }
     );
 
-  doc.moveDown(2);
-
   doc
-    .fontSize(18)
-    .fillColor("#111111")
-    .text("Services Included");
+    .fontSize(20)
+    .fillColor("#111827")
+    .text("Services Included", 50, 300);
 
-  doc.moveDown(1);
-
-  const services = reportData.services || [];
+  let startY = 350;
 
   services.forEach((service, index) => {
     doc
-      .fontSize(13)
-      .fillColor("#333333")
-      .text(`${index + 1}. ${service}`);
+      .roundedRect(60, startY, 470, 45, 10)
+      .fillAndStroke("#f3f4f6", "#e5e7eb");
+
+    doc
+      .fillColor("#2563eb")
+      .fontSize(14)
+      .text(String(index + 1), 80, startY + 14);
+
+    doc
+      .fillColor("#111827")
+      .fontSize(14)
+      .text(String(service), 120, startY + 14);
+
+    startY += 65;
   });
+
+  doc
+    .fontSize(12)
+    .fillColor("#6b7280")
+    .text(
+      "The following sections provide detailed breakdowns of each marketing service along with key performance indicators, charts, comparisons, and actionable recommendations.",
+      50,
+      startY + 20,
+      {
+        width: 500,
+        lineGap: 6,
+        align: "justify",
+      }
+    );
 };
 
 module.exports = drawExecutiveSummary;

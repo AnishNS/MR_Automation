@@ -1,12 +1,13 @@
+const drawPageHeader = require("../components/pageHeader");
+
 const drawServiceOverview = (doc, reportData) => {
   doc.addPage();
 
-  doc
-    .fontSize(24)
-    .fillColor("#111111")
-    .text("Service Overview");
-
-  doc.moveDown(1);
+  drawPageHeader(
+    doc,
+    "Service Overview",
+    "Summary of marketing services included in this monthly report"
+  );
 
   const services = reportData.services || [];
 
@@ -14,29 +15,45 @@ const drawServiceOverview = (doc, reportData) => {
     doc
       .fontSize(13)
       .fillColor("#555555")
-      .text("No service data available for this report.");
+      .text("No service data available for this report.", 50, 150);
     return;
   }
 
+  let y = 150;
+
   services.forEach((service, index) => {
     doc
-      .fontSize(16)
-      .fillColor("#2563eb")
-      .text(`${index + 1}. ${service}`);
-
-    doc.moveDown(0.5);
+      .roundedRect(55, y, 485, 75, 10)
+      .fillAndStroke("#ffffff", "#e5e7eb");
 
     doc
-      .fontSize(12)
-      .fillColor("#444444")
+      .circle(85, y + 37, 15)
+      .fill("#2563eb");
+
+    doc
+      .fontSize(11)
+      .fillColor("#ffffff")
+      .text(String(index + 1), 81, y + 31);
+
+    doc
+      .fontSize(15)
+      .fillColor("#111827")
+      .text(service, 120, y + 18);
+
+    doc
+      .fontSize(11.5)
+      .fillColor("#6b7280")
       .text(
-        `${service} performance data is included in this monthly report and will be explained in detail in its dedicated section.`,
+        `${service} performance data is included in this report with dedicated insights, recommendations, charts, and comparison metrics where available.`,
+        120,
+        y + 42,
         {
-          lineGap: 4,
+          width: 380,
+          lineGap: 3,
         }
       );
 
-    doc.moveDown(1.2);
+    y += 95;
   });
 };
 
