@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const reportHistoryRoutes = require("./routes/reportHistoryRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -21,6 +22,7 @@ const uploadRoutes = require("./routes/uploadRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const authRoutes = require("./routes/authRoutes");
 const pdfRoutes = require("./routes/pdfRoutes");
+const dashboardStatsRoutes = require("./routes/dashboardStatsRoutes");
 
 /* API ROUTES */
 
@@ -28,6 +30,8 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/pdf", pdfRoutes);
+app.use("/api/report-history", reportHistoryRoutes);
+app.use("/api/dashboard-stats", dashboardStatsRoutes);
 
 /* TEST ROUTE */
 

@@ -1,5 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { fetchDashboardStats } from "../services/api";
+
 
 import {
   Card,
@@ -14,24 +17,37 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState(null);
+  useEffect(() => {
+    const loadStats = async () => {
+      const data = await fetchDashboardStats();
+      setStats(data.stats);
+    };
+
+    loadStats();
+  }, []);
   const cards = [
-    {
-      title: "Reports Generated",
-      icon: <AssessmentIcon />,
-    },
-    {
-      title: "Files Uploaded",
-      icon: <UploadFileIcon />,
-    },
-    {
-      title: "PDF Exports",
-      icon: <PictureAsPdfIcon />,
-    },
-    {
-      title: "Active Dashboards",
-      icon: <DashboardIcon />,
-    },
-  ];
+  {
+    title: "Reports Generated",
+    value: stats?.totalReports || 0,
+    icon: <AssessmentIcon />,
+  },
+  {
+    title: "Total Clients",
+    value: stats?.totalClients || 0,
+    icon: <UploadFileIcon />,
+  },
+  {
+    title: "PDF Exports",
+    value: stats?.totalPdfs || 0,
+    icon: <PictureAsPdfIcon />,
+  },
+  {
+    title: "Active Services",
+    value: stats?.totalServices || 0,
+    icon: <DashboardIcon />,
+  },
+];
 
   return (
     <div className="dashboard-container">
@@ -42,12 +58,27 @@ const Dashboard = () => {
         <h2>MarketLens AI</h2>
 
         <ul>
-          <li className="active">Dashboard</li>
-          <li>Upload Data</li>
-          <li>Reports</li>
-          <li>Analytics</li>
-          <li>Settings</li>
-        </ul>
+        <li
+          className="active"
+          onClick={() => navigate("/dashboard")}
+        >
+          Dashboard
+        </li>
+
+        <li
+          onClick={() => navigate("/reports-history")}
+        >
+          Reports
+        </li>
+
+        <li>
+          Analytics
+        </li>
+
+        <li>
+          Settings
+        </li>
+      </ul>
       </div>
 
       {/* MAIN CONTENT */}
@@ -58,11 +89,11 @@ const Dashboard = () => {
 
         <div className="topbar">
           <h1>Dashboard</h1>
-
-          <button onClick={()=> navigate("/report")}>
-            Generate Report
-          </button>
+        <button onClick={() => navigate("/report")}>
+          New Report
+        </button>
         </div>
+
 
         {/* CARDS */}
 
@@ -97,14 +128,50 @@ const Dashboard = () => {
 
         <div className="recent-section">
 
-          <div className="recent-card">
-            <h2>Recent Activity</h2>
+         <div className="recent-card">
+                <h2>Recent Activity</h2>
+
+                {stats?.recentReports?.length ? (
+                  stats.recentReports.map((report, index) => (
+                    <div className="recent-item" key={index}>
+                      <p>
+                        <strong>{report.clientName}</strong> report generated
+                      </p>
+                      <span>
+                        {report.month} {report.year} •{" "}
+                        {new Date(report.generatedAt).toLocaleString()}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p>No recent reports available</p>
+                )}
           </div>
 
-          <div className="recent-card">
-            <h2>Quick Insights</h2>
+         <div className="recent-card">
+        <h2>Quick Insights</h2>
 
-          </div>
+        <div className="quick-insight-item">
+          Total clients managed: <strong>{stats?.totalClients || 0}</strong>
+        </div>
+
+        <div className="quick-insight-item">
+          Reports generated: <strong>{stats?.totalReports || 0}</strong>
+        </div>
+
+        <div className="quick-insight-item">
+          Active services tracked: <strong>{stats?.totalServices || 0}</strong>
+        </div>
+
+        <div className="quick-insight-item">
+          Latest report:{" "}
+          <strong>
+            {stats?.latestReport
+              ? `${stats.latestReport.clientName} - ${stats.latestReport.month} ${stats.latestReport.year}`
+              : "No reports yet"}
+          </strong>
+        </div>
+      </div>
 
         </div>
 
