@@ -17,9 +17,9 @@ const {
 const {
   saveSEOAnalytics,
 } = require("./seoAnalyticsService");
-const {
-  findExistingReport,
-} = require("./reportLookupService");
+// const {
+//   findExistingReport,
+// } = require("./reportLookupService");
 
 const saveProcessedReport = async ({
   clientReport,
@@ -27,28 +27,28 @@ const saveProcessedReport = async ({
 }) => {
   const client = await findOrCreateClient(clientReport.clientName);
 
-    const duplicateChecks = [];
+    // const duplicateChecks = [];
 
-    for (const platform of clientReport.services || []) {
-    const existingReport = await findExistingReport({
-        clientId: client.id,
-        month: clientReport.month,
-        year: clientReport.year,
-        platform,
-    });
+    // for (const platform of clientReport.services || []) {
+    // const existingReport = await findExistingReport({
+    //     clientId: client.id,
+    //     month: clientReport.month,
+    //     year: clientReport.year,
+    //     platform,
+    // });
 
-    if (existingReport) {
-        duplicateChecks.push(platform);
-    }
-    }
+    // if (existingReport) {
+    //     duplicateChecks.push(platform);
+    // }
+    // }
 
-    if (duplicateChecks.length > 0) {
-    return {
-        client,
-        skipped: true,
-        reason: `Duplicate report already exists for ${duplicateChecks.join(", ")} - ${clientReport.month} ${clientReport.year}`,
-    };
-    }
+    // if (duplicateChecks.length > 0) {
+    // return {
+    //     client,
+    //     skipped: true,
+    //     reason: `Duplicate report already exists for ${duplicateChecks.join(", ")} - ${clientReport.month} ${clientReport.year}`,
+    // };
+    // }
 
     const report = await createReport({
     clientId: client.id,
