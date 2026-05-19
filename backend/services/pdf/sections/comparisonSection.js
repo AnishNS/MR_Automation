@@ -73,7 +73,8 @@ const drawComparisonSection = (doc, reportData) => {
   drawPageHeader(
     doc,
     "Month-to-Month Comparison",
-    "Performance growth tracking overview"
+    "Performance growth tracking overview",
+    reportData
   );
 
   const instagramComparisons =
@@ -89,11 +90,11 @@ const drawComparisonSection = (doc, reportData) => {
     doc
       .fontSize(12)
       .fillColor("#555555")
-      .text("No comparison data available for this report.", 50, 150);
+      .text("No comparison data available for this report.", 55, 205);
     return;
   }
 
-  let y = 150;
+  let y = 205;
 
   if (Object.keys(instagramComparisons).length) {
     y = drawComparisonGroup(

@@ -1,8 +1,8 @@
 const drawSectionDivider = (doc, y = doc.y) => {
   doc
-    .moveTo(50, y)
-    .lineTo(545, y)
-    .strokeColor("#000000")
+    .moveTo(55, y)
+    .lineTo(540, y)
+    .strokeColor("#d1d5db")
     .lineWidth(1)
     .stroke();
 

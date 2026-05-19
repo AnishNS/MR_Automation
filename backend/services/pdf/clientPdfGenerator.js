@@ -40,7 +40,7 @@ const generateClientPdf = async (reportData) => {
       drawInsightsSection(doc, reportData);
       drawRecommendationsSection(doc, reportData);
       drawComparisonSection(doc, reportData);
-      await drawInstagramSection(doc, reportData.instagram);
+      await drawInstagramSection(doc, reportData.instagram, reportData);
       await drawSEOSection(doc, reportData.seo);
       drawConclusionSection(doc, reportData);
 

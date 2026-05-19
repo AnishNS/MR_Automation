@@ -12,7 +12,7 @@ const {
 
 const drawPageHeader = require("../components/pageHeader");
 
-const drawInstagramSection = async (doc, instagramData) => {
+const drawInstagramSection = async (doc, instagramData, reportData = {}) => {
   if (!instagramData) return;
 
   doc.addPage();
@@ -22,12 +22,11 @@ const drawInstagramSection = async (doc, instagramData) => {
     "Instagram Performance",
     "Monthly Instagram analytics overview",
     {
-      clientName: instagramData.clientName,
-      month: instagramData.month,
-      year: instagramData.year,
+      clientName: instagramData.clientName || reportData.clientName,
+      month: instagramData.month || reportData.month,
+      year: instagramData.year || reportData.year,
     }
   );
-
   const summary = instagramData.analytics?.summary || {};
 
   doc
@@ -120,22 +119,7 @@ const drawInstagramSection = async (doc, instagramData) => {
   drawChartBlock(doc, chartBuffer, 50, 420, 500);
 
   const bestPost = instagramData.analytics?.bestPost;
-if (bestPost) {
-  doc
-    .fontSize(14)
-    .fillColor("#2563eb")
-    .text("Best Performing Post", 390, 675);
-
-  doc
-    .fontSize(12)
-    .fillColor("#333333")
-    .text(`Post Type: ${bestPost.postType || "-"}`, 390, 700);
-
-  doc.text(`Views: ${bestPost.views || 0}`, 390, 716);
-  doc.text(`Reach: ${bestPost.reach || 0}`, 390, 732);
-  doc.text(`Engagement: ${bestPost.engagement || 0}`, 390, 748);
-}
-
+  
   const postTypeCounts =
     instagramData.analytics?.postTypeCounts || {};
 
@@ -151,18 +135,17 @@ if (bestPost) {
 
     doc.addPage();
 
-    drawPageHeader(
-      doc,
-      "Instagram Content Mix",
-      "Content format distribution by post type",
-      {
-        clientName: instagramData.clientName,
-        month: instagramData.month,
-        year: instagramData.year,
-      }
-    );
-
-    drawChartBlock(doc, pieChartBuffer, 70, 190, 450);
+  drawPageHeader(
+    doc,
+    "Instagram Content Mix",
+    "Content format distribution by post type",
+    {
+      clientName: instagramData.clientName || reportData.clientName,
+      month: instagramData.month || reportData.month,
+      year: instagramData.year || reportData.year,
+    }
+  );
+    drawChartBlock(doc, pieChartBuffer, 70, 215, 450);
   }
 };
 

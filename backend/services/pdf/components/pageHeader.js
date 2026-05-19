@@ -70,7 +70,7 @@ const drawPageHeader = (doc, title, subtitle = "", reportData = {}) => {
       });
   }
 
-  doc.y = subtitle ? 175 : 165;
+  doc.y = subtitle ? 190 : 180;
 };
 
 module.exports = drawPageHeader;
