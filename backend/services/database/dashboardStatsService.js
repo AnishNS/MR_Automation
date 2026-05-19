@@ -10,7 +10,7 @@ const getDashboardStats = async () => {
   );
 
   const [[services]] = await pool.query(
-    "SELECT COUNT(*) AS totalServices FROM services"
+    "SELECT COUNT(DISTINCT platform) AS totalServices FROM services"
   );
 
   const [[latestReport]] = await pool.query(

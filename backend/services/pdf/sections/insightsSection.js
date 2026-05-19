@@ -39,7 +39,8 @@ const drawInsightsSection = (doc, reportData) => {
   drawPageHeader(
     doc,
     "Key Insights",
-    "Marketing intelligence summary based on uploaded performance data"
+    "Marketing intelligence summary based on uploaded performance data",
+    reportData
   );
 
   const instagramInsights = reportData.instagram?.analytics?.insights || [];
@@ -49,11 +50,11 @@ const drawInsightsSection = (doc, reportData) => {
     doc
       .fontSize(12)
       .fillColor("#555555")
-      .text("No insights available for this report.", 50, 150);
+      .text("No insights available for this report.", 55, 210);
     return;
   }
 
-  let y = 150;
+  let y = 205;
 
   if (instagramInsights.length) {
     y = drawInsightCard(doc, "Instagram Insights", instagramInsights, y);

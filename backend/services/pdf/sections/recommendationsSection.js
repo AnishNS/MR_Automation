@@ -48,7 +48,8 @@ const drawRecommendationsSection = (doc, reportData) => {
   drawPageHeader(
     doc,
     "Recommendations",
-    "Strategic action points for the upcoming month"
+    "Strategic action points for the upcoming month",
+    reportData
   );
 
   const instagramRecommendations =
@@ -61,11 +62,11 @@ const drawRecommendationsSection = (doc, reportData) => {
     doc
       .fontSize(12)
       .fillColor("#555555")
-      .text("No recommendations available for this report.", 50, 150);
+      .text("No recommendations available for this report.", 55, 210);
     return;
   }
 
-  let y = 150;
+  let y = 205;
 
   if (instagramRecommendations.length) {
     y = drawRecommendationBlock(

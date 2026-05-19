@@ -1,73 +1,145 @@
+const drawPageHeader = require("../components/pageHeader");
+
+const formatServiceName = (service) => {
+  return String(service)
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (char) => char.toUpperCase());
+};
+
 const drawExecutiveSummary = (doc, reportData = {}) => {
   doc.addPage();
 
-  const pageWidth = doc.page.width;
   const clientName = reportData.clientName || "Client";
   const reportMonth = reportData.month || "";
   const reportYear = reportData.year || "";
+
   const services = Array.isArray(reportData.services)
     ? reportData.services
     : [];
 
-  doc.rect(0, 0, pageWidth, 110).fill("#0f172a");
+  drawPageHeader(
+    doc,
+    "Executive Summary",
+    "Monthly digital marketing performance overview",
+    reportData
+  );
+
+  let y = 205;
+
+  const summaryText = `This report provides a concise overview of ${clientName}'s digital marketing performance for ${reportMonth} ${reportYear}. It summarizes active services, key performance indicators, performance insights, recommendations, and month-to-month growth observations based on the uploaded marketing data.`;
 
   doc
-    .fillColor("#ffffff")
-    .fontSize(28)
-    .text("Executive Summary", 50, 45);
-
-  doc
-    .fillColor("#374151")
+    .font("Helvetica")
     .fontSize(13)
-    .text(
-      `This report provides a comprehensive overview of ${clientName}'s monthly digital marketing performance for ${reportMonth} ${reportYear}. The report includes platform-wise analytics, performance insights, strategic recommendations, and month-to-month growth analysis across all active marketing services.`,
-      50,
-      150,
-      {
-        width: 500,
-        lineGap: 8,
-        align: "justify",
-      }
-    );
+    .fillColor("#374151")
+    .text(summaryText, 55, y, {
+      width: 485,
+      lineGap: 7,
+      align: "justify",
+    });
+
+  y += doc.heightOfString(summaryText, {
+    width: 485,
+    lineGap: 7,
+  }) + 45;
+
+  const snapshotLines = [
+    `Client: ${clientName}`,
+    `Reporting Period: ${reportMonth} ${reportYear}`,
+    `Active Services: ${services.length}`,
+  ];
+
+  const snapshotTextHeight = snapshotLines.length * 22;
+  const snapshotBoxHeight = snapshotTextHeight + 65;
 
   doc
-    .fontSize(20)
-    .fillColor("#111827")
-    .text("Services Included", 50, 300);
+    .roundedRect(55, y, 485, snapshotBoxHeight, 12)
+    .fillAndStroke("#eff6ff", "#bfdbfe");
 
-  let startY = 350;
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(15)
+    .fillColor("#1d4ed8")
+    .text("Report Snapshot", 75, y + 22);
 
-  services.forEach((service, index) => {
+  let snapshotY = y + 52;
+
+  snapshotLines.forEach((line) => {
     doc
-      .roundedRect(60, startY, 470, 45, 10)
-      .fillAndStroke("#f3f4f6", "#e5e7eb");
+      .font("Helvetica")
+      .fontSize(11.5)
+      .fillColor("#374151")
+      .text(line, 75, snapshotY, {
+        width: 430,
+      });
 
-    doc
-      .fillColor("#2563eb")
-      .fontSize(14)
-      .text(String(index + 1), 80, startY + 14);
-
-    doc
-      .fillColor("#111827")
-      .fontSize(14)
-      .text(String(service), 120, startY + 14);
-
-    startY += 65;
+    snapshotY += 22;
   });
 
+  y += snapshotBoxHeight + 55;
+
   doc
-    .fontSize(12)
-    .fillColor("#6b7280")
-    .text(
-      "The following sections provide detailed breakdowns of each marketing service along with key performance indicators, charts, comparisons, and actionable recommendations.",
-      50,
-      startY + 20,
-      {
-        width: 500,
-        lineGap: 6,
-        align: "justify",
-      }
-    );
+    .font("Helvetica-Bold")
+    .fontSize(20)
+    .fillColor("#111827")
+    .text("Services Included", 55, y);
+
+  y += 45;
+
+  services.forEach((service, index) => {
+    const serviceName = formatServiceName(service);
+
+    doc
+      .roundedRect(60, y, 470, 48, 10)
+      .fillAndStroke("#ffffff", "#e5e7eb");
+
+    doc
+      .circle(88, y + 24, 11)
+      .fill("#2563eb");
+
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(9)
+      .fillColor("#ffffff")
+      .text(String(index + 1), 85, y + 20);
+
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(13)
+      .fillColor("#111827")
+      .text(serviceName, 120, y + 17);
+
+    y += 62;
+  });
+
+  const scopeText =
+    "The following sections provide detailed performance breakdowns, KPI summaries, charts, comparisons, insights, and recommendations for the active services included in this monthly report.";
+
+  const scopeHeight = doc.heightOfString(scopeText, {
+    width: 420,
+    lineGap: 5,
+  });
+
+  const scopeBoxHeight = scopeHeight + 75;
+
+  doc
+    .roundedRect(55, y + 15, 485, scopeBoxHeight, 12)
+    .fillAndStroke("#f8fafc", "#e5e7eb");
+
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(15)
+    .fillColor("#1d4ed8")
+    .text("Report Scope", 75, y + 35);
+
+  doc
+    .font("Helvetica")
+    .fontSize(11.5)
+    .fillColor("#374151")
+    .text(scopeText, 75, y + 62, {
+      width: 420,
+      lineGap: 5,
+    });
 };
 
 module.exports = drawExecutiveSummary;
