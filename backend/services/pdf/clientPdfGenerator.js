@@ -28,6 +28,7 @@ const generateClientPdf = async (reportData) => {
       const doc = new PDFDocument({
         margin: 50,
         size: "A4",
+        bufferPages: true,
       });
 
       const stream = fs.createWriteStream(filePath);
@@ -44,6 +45,19 @@ const generateClientPdf = async (reportData) => {
       await drawSEOSection(doc, reportData.seo);
       drawConclusionSection(doc, reportData);
 
+      const range = doc.bufferedPageRange();
+      const totalPages = range.count;
+
+      for (let i = 0; i < totalPages; i++) {
+        doc.switchToPage(range.start + i);
+
+        drawPageFooter(
+          doc,
+          reportData.clientName,
+          i + 1,
+          totalPages
+        );
+      }
       doc.end();
 
       stream.on("finish", () => {
