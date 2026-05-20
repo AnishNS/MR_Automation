@@ -2,22 +2,24 @@ const drawPageHeader = require("../components/pageHeader");
 
 const drawFocusCard = (doc, text, index, y) => {
   doc
-    .roundedRect(60, y, 470, 55, 10)
+    .roundedRect(60, y, 470, 58, 12)
     .fillAndStroke("#ffffff", "#e5e7eb");
 
   doc
-    .circle(90, y + 28, 12)
+    .circle(90, y + 29, 12)
     .fill("#2563eb");
 
   doc
+    .font("Helvetica-Bold")
     .fontSize(10)
     .fillColor("#ffffff")
-    .text(String(index + 1), 86, y + 24);
+    .text(String(index + 1), 86, y + 25);
 
   doc
-    .fontSize(12)
+    .font("Helvetica")
+    .fontSize(11.5)
     .fillColor("#374151")
-    .text(text, 115, y + 18, {
+    .text(text, 115, y + 16, {
       width: 380,
       lineGap: 4,
     });
@@ -37,23 +39,36 @@ const drawConclusionSection = (doc, reportData = {}) => {
   const hasInstagram = !!reportData.instagram;
   const hasSEO = !!reportData.seo;
 
-  const summaryText = hasInstagram && !hasSEO
-    ? `This monthly report summarizes the Instagram performance of ${clientName} for the reporting period. The analysis highlights content performance, audience reach, engagement trends, and opportunities to improve future social media growth.`
-    : `This monthly report summarizes the digital marketing performance of ${clientName} for the reporting period. The analysis highlights campaign performance, audience engagement trends, SEO visibility, and strategic growth opportunities identified from the uploaded marketing data.`;
+  const summaryText =
+    hasInstagram && !hasSEO
+      ? `This monthly report summarizes the Instagram performance of ${clientName} for the reporting period. The analysis highlights content performance, audience reach, engagement trends, and opportunities to improve future social media growth.`
+      : `This monthly report summarizes the digital marketing performance of ${clientName} for the reporting period. The analysis highlights campaign performance, audience engagement trends, SEO visibility, and strategic growth opportunities identified from the uploaded marketing data.`;
 
   doc
-    .fontSize(13)
+    .roundedRect(55, 205, 485, 95, 12)
+    .fillAndStroke("#f8fafc", "#e5e7eb");
+
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(15)
+    .fillColor("#1d4ed8")
+    .text("Monthly Summary", 75, 225);
+
+  doc
+    .font("Helvetica")
+    .fontSize(11.5)
     .fillColor("#4b5563")
-    .text(summaryText, 55, 205, {
-      width: 485,
+    .text(summaryText, 75, 252, {
+      width: 430,
       align: "justify",
-      lineGap: 7,
+      lineGap: 5,
     });
 
   doc
-    .fontSize(20)
+    .font("Helvetica-Bold")
+    .fontSize(19)
     .fillColor("#111827")
-    .text("Recommended Focus Areas", 55, 315);
+    .text("Recommended Focus Areas", 55, 335);
 
   const focusAreas = [];
 
@@ -75,40 +90,43 @@ const drawConclusionSection = (doc, reportData = {}) => {
     "Track monthly performance comparisons consistently to identify long-term growth trends and opportunities."
   );
 
-  let y = 365;
+  let y = 380;
 
   focusAreas.slice(0, 4).forEach((item, index) => {
     drawFocusCard(doc, item, index, y);
-    y += 75;
+    y += 72;
   });
 
-const overallSummaryText = hasInstagram && !hasSEO
-  ? "The current month's Instagram performance shows measurable audience visibility and engagement. Continued optimization of high-performing content formats will help improve reach, consistency, and long-term brand presence."
-  : "The current month's performance demonstrates measurable audience engagement and visibility growth across the available marketing channels. Continued optimization and consistent reporting will help improve campaign effectiveness and long-term digital presence.";
+  const overallSummaryText =
+    hasInstagram && !hasSEO
+      ? "The current month's Instagram performance shows measurable audience visibility and engagement. Continued optimization of high-performing content formats will help improve reach, consistency, and long-term brand presence."
+      : "The current month's performance demonstrates measurable audience engagement and visibility growth across the available marketing channels. Continued optimization and consistent reporting will help improve campaign effectiveness and long-term digital presence.";
 
-const summaryTextHeight = doc.heightOfString(overallSummaryText, {
-  width: 420,
-  lineGap: 5,
-});
-
-const summaryCardHeight = summaryTextHeight + 70;
-
-doc
-  .roundedRect(55, y + 20, 485, summaryCardHeight, 12)
-  .fillAndStroke("#eff6ff", "#bfdbfe");
-
-doc
-  .fontSize(15)
-  .fillColor("#1d4ed8")
-  .text("Overall Report Summary", 75, y + 40);
-
-doc
-  .fontSize(11.5)
-  .fillColor("#374151")
-  .text(overallSummaryText, 75, y + 65, {
+  const summaryTextHeight = doc.heightOfString(overallSummaryText, {
     width: 420,
     lineGap: 5,
   });
+
+  const summaryCardHeight = summaryTextHeight + 72;
+
+  doc
+    .roundedRect(55, y + 18, 485, summaryCardHeight, 12)
+    .fillAndStroke("#eff6ff", "#bfdbfe");
+
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(15)
+    .fillColor("#1d4ed8")
+    .text("Overall Report Summary", 75, y + 38);
+
+  doc
+    .font("Helvetica")
+    .fontSize(11.5)
+    .fillColor("#374151")
+    .text(overallSummaryText, 75, y + 65, {
+      width: 420,
+      lineGap: 5,
+    });
 };
 
 module.exports = drawConclusionSection;
