@@ -48,7 +48,7 @@ const generateClientPdf = async (reportData) => {
       const range = doc.bufferedPageRange();
       const totalPages = range.count;
 
-      for (let i = 0; i < totalPages; i++) {
+      for (let i = 1; i < totalPages; i++) {
         doc.switchToPage(range.start + i);
 
         drawPageFooter(

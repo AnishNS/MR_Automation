@@ -1,4 +1,5 @@
 const drawPageHeader = require("../components/pageHeader");
+const drawHighlightBox = require("../components/highlightBox");
 
 const formatServiceName = (service) => {
   return String(service)
@@ -113,33 +114,15 @@ const drawExecutiveSummary = (doc, reportData = {}) => {
   });
 
   const scopeText =
-    "The following sections provide detailed performance breakdowns, KPI summaries, charts, comparisons, insights, and recommendations for the active services included in this monthly report.";
+    "The following sections provide detailed performance breakdowns, KPI summaries, charts, comparisons, strategic insights, and recommendations for all active marketing services included in this monthly report.";
 
-  const scopeHeight = doc.heightOfString(scopeText, {
-    width: 420,
-    lineGap: 5,
-  });
-
-  const scopeBoxHeight = scopeHeight + 75;
-
-  doc
-    .roundedRect(55, y + 15, 485, scopeBoxHeight, 12)
-    .fillAndStroke("#f8fafc", "#e5e7eb");
-
-  doc
-    .font("Helvetica-Bold")
-    .fontSize(15)
-    .fillColor("#1d4ed8")
-    .text("Report Scope", 75, y + 35);
-
-  doc
-    .font("Helvetica")
-    .fontSize(11.5)
-    .fillColor("#374151")
-    .text(scopeText, 75, y + 62, {
-      width: 420,
-      lineGap: 5,
-    });
+  drawHighlightBox(
+    doc,
+    "Report Scope",
+    scopeText,
+    55,
+    y + 20
+  );
 };
 
 module.exports = drawExecutiveSummary;
