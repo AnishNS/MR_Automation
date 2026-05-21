@@ -4,39 +4,49 @@ const drawRecommendationBlock = (doc, title, recommendations, startY) => {
   let y = startY;
 
   doc
-    .roundedRect(55, y, 485, 40, 10)
-    .fillAndStroke("#eef2ff", "#dbeafe");
+    .roundedRect(55, y, 485, 44, 12)
+    .fillAndStroke("#eff6ff", "#bfdbfe");
 
   doc
+    .font("Helvetica-Bold")
     .fontSize(15)
-    .fillColor("#2563eb")
-    .text(title, 75, y + 13);
+    .fillColor("#1d4ed8")
+    .text(title, 75, y + 14);
 
-  y += 60;
+  y += 62;
 
   recommendations.forEach((recommendation, index) => {
+    const textHeight = doc.heightOfString(recommendation, {
+      width: 375,
+      lineGap: 4,
+    });
+
+    const cardHeight = Math.max(60, textHeight + 30);
+
     doc
-      .roundedRect(70, y, 455, 58, 8)
+      .roundedRect(70, y, 455, cardHeight, 10)
       .fillAndStroke("#ffffff", "#e5e7eb");
 
     doc
-      .circle(90, y + 28, 10)
+      .circle(92, y + 27, 11)
       .fill("#2563eb");
 
     doc
+      .font("Helvetica-Bold")
       .fontSize(9)
       .fillColor("#ffffff")
-      .text(String(index + 1), 87, y + 24);
+      .text(String(index + 1), 89, y + 23);
 
     doc
+      .font("Helvetica")
       .fontSize(11.5)
       .fillColor("#374151")
-      .text(recommendation, 115, y + 14, {
-        width: 380,
+      .text(recommendation, 115, y + 15, {
+        width: 375,
         lineGap: 4,
       });
 
-    y += 72;
+    y += cardHeight + 14;
   });
 
   return y + 10;
@@ -60,6 +70,7 @@ const drawRecommendationsSection = (doc, reportData) => {
 
   if (!instagramRecommendations.length && !seoRecommendations.length) {
     doc
+      .font("Helvetica")
       .fontSize(12)
       .fillColor("#555555")
       .text("No recommendations available for this report.", 55, 210);

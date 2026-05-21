@@ -1,24 +1,21 @@
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 
-const width = 800;
-const height = 400;
-
-const chartCanvas = new ChartJSNodeCanvas({
-  width,
-  height,
-  backgroundColour: "white",
-});
-
 const generateBarChartImage = async (labels = [], values = [], title = "") => {
+  const chartCanvas = new ChartJSNodeCanvas({
+    width: 800,
+    height: 400,
+    backgroundColour: "white",
+  });
+
   const configuration = {
     type: "bar",
     data: {
       labels,
       datasets: [
         {
-          label: title,
           data: values,
           backgroundColor: "#2563eb",
+          borderRadius: 6,
         },
       ],
     },
@@ -31,12 +28,22 @@ const generateBarChartImage = async (labels = [], values = [], title = "") => {
         title: {
           display: true,
           text: title,
+          font: {
+            size: 16,
+            weight: "bold",
+          },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
         },
       },
     },
   };
 
-  return await chartCanvas.renderToBuffer(configuration);
+  const buffer = await chartCanvas.renderToBuffer(configuration);
+  return Buffer.from(buffer);
 };
 
 module.exports = {
