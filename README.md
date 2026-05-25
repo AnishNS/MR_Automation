@@ -1,656 +1,372 @@
 # MarketLens AI
 
-MarketLens AI is an AI-powered monthly report automation system built to generate professional client reports from uploaded raw analytics data.
+MarketLens AI is a full-stack marketing report generator. The frontend lets an admin manage clients, upload monthly analytics files, generate reports, and view report history. The backend receives uploaded CSV/XLSX files, detects the marketing platform, normalizes the data, calculates analytics, creates charts and insights, generates a client PDF report, and stores report metadata in MySQL.
 
-The system supports:
-- CSV
-- XLSX
-- DOCX
-- PDF
-- SEO Reports
-- Instagram Analytics
-- Facebook Analytics
-- Generic Marketing Data
+## Tech Stack
 
-The platform processes uploaded files, extracts analytics data, normalizes metrics, generates KPIs, creates charts, produces insights, and exports professional PDF reports.
+- Frontend: React, Vite, React Router, Material UI, Axios, Recharts
+- Backend: Node.js, Express, Multer, CSV Parser, XLSX, MySQL2, PDFKit, Chart.js / chartjs-node-canvas
+- Database: MySQL
 
----
+## Current Processing Flow
 
-# Project Structure
+1. User manages clients in the frontend.
+2. User selects a client and report month.
+3. User uploads one or more analytics files.
+4. Backend stores uploads in `backend/uploads`.
+5. Backend parses CSV/XLSX files.
+6. Backend detects platform type such as Instagram or SEO.
+7. Backend normalizes platform-specific data.
+8. Backend calculates analytics, insights, recommendations, comparisons, and chart data.
+9. Backend assembles a client-level report.
+10. Backend generates a PDF in `backend/generated-reports`.
+11. Backend saves report, service, and analytics records to MySQL.
+12. Frontend shows the generated PDF link and report history.
 
-```txt
-MARKETING-REPORT-APP/
-│
-├── backend/
-│
-├── frontend/
-│
-├── node_modules/
-│
-├── .gitignore
-├── package.json
-├── package-lock.json
-└── README.md
+## Important Rule
 
-Frontend
-    =>The frontend is built using:
-        1.React
-        2.Vite
-        3.Material UI
-        4.React Router
-    =>The frontend handles:
-        1.login
-        2.dashboard
-        3.report configuration
-        4.file upload UI
-        5.charts
-        6.KPI display
-        7.report preview
+Do not invent analytics values. KPIs, charts, insights, comparisons, summaries, and recommendations must come from uploaded client data or saved historical data. When data is unavailable, return zero, `N/A`, hide the section, or show a no-data state.
 
-Frontend Structure       
-frontend/
-│
-├── public/
-│
-├── src/
-│   │
-│   ├── components/
-│   │   ├── ChartsSection.jsx
-│   │   ├── ComparisonSection.jsx
-│   │   ├── KPISection.jsx
-│   │   ├── Navbar.jsx
-│   │   ├── ReportPreview.jsx
-│   │   └── UploadSection.jsx
-│   │
-│   ├── pages/
-│   │   ├── Dashboard.jsx
-│   │   ├── Login.jsx
-│   │   └── ReportPage.jsx
-│   │
-│   ├── services/
-│   │   └── api.js
-│   │
-│   ├── App.css
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-│
-├── .gitignore
-├── eslint.config.js
-├── index.html
-├── package.json
-├── package-lock.json
-├── README.md
-└── vite.config.js
+## Setup
 
-Frontend File Responsibilities
-src/main.jsx
-    =>Main React entry point.
-    =>Responsibilities:
-        1.render React app
-        2.connect App.jsx to DOM
-        3.import global styles
+Install root dependencies if needed:
 
-src/App.jsx
-    =>Frontend routing file.
-    =>Responsibilities:
-        1.manage application routes
-        2.connect pages using React Router
-    =>Current Routes:
-        / → Login Page
-        /dashboard → Dashboard
-        /report → Report Generation Page
+```bash
+npm install
+```
 
-src/index.css
-    =>Main global styling file.
-    =>Responsibilities:
-        1.global theme
-        2.Times New Roman font
-        3.dark theme
-        4.dashboard styles
-        5.login styles
-        6.report page styles
-        7.Material UI overrides
+Install backend dependencies:
 
-src/App.css
-    =>Optional application-level layout styling.
-    =>Responsibilities:
-        1.global layout utilities
-        2.app-wide backgrounds
+```bash
+cd backend
+npm install
+npm run dev
+```
 
-src/pages/Login.jsx
-    =>Admin login page.
-    =>Responsibilities:
-        1.handle login UI
-        2.validate admin credentials
-        3.redirect to dashboard
-    =>Current Authentication:
-        1.temporary frontend authentication
-    =>Future:
-        1.JWT authentication
-        2.backend authentication
-        3.session management
+Install frontend dependencies:
 
-src/pages/Dashboard.jsx
-    =>Main dashboard page.
-    =>Responsibilities:
-        1.sidebar navigation
-        2.KPI cards
-        3.recent activity
-        4.report generation navigation
-    =>Future:
-        1.real analytics cards
-        2.live KPI updates
-        3.AI insights
-        4.trend summaries
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-src/pages/ReportPage.jsx
-    =>Report generation configuration page.
-    =>Responsibilities:
-        1.collect report metadata
-        2.upload analytics files
-        3.configure reporting period
-        4.start report generation
-    =>Current Inputs:
-        1.Reporting Period
-        2.Prepared By
-        3.Prepared For
+Backend runs on `http://localhost:5000` by default. Frontend API calls currently point to `http://localhost:5000/api`.
 
-src/components/Navbar.jsx
-    =>Reusable navigation component.
-    =>Responsibilities:
-        1.top navigation
-        2.sidebar navigation
-        3.future responsive navigation
+## Environment
 
-src/components/UploadSection.jsx
-    =>Reusable upload component.
-    =>Responsibilities:
-        1.file selection
-        2.drag and drop upload
-        3.upload progress
-        4.upload validation
+`backend/config/database.js` reads these values from `backend/.env`:
 
-src/components/KPISection.jsx
-    =>Reusable KPI display section.
-    =>Responsibilities:
-        1.show analytics metrics
-        2.display totals
-        3.percentage growth
-        4.KPI cards
+```env
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+PORT=5000
+```
 
-src/components/ChartsSection.jsx
-    =>Reusable charts component.
-    =>Responsibilities:
-        1.render chart datasets
-        2.display analytics graphs
-        3.display trend charts
+## Root Structure
 
-src/components/ComparisonSection.jsx
-    =>Reusable comparison component.
-    =>Responsibilities:
-        1.compare months
-        2.compare performance
-        3.show growth analysis
+```text
+marketing-report-app/
+  backend/
+  frontend/
+  node_modules/
+  package.json
+  package-lock.json
+  .gitignore
+  README.md
+```
 
+### Root Files and Folders
 
-src/components/ReportPreview.jsx
-    =>Reusable report preview component.
-    =>Responsibilities:
-        1.preview generated reports
-        2.preview charts
-        3.preview PDF layout
+- `backend/`: Express API, parsing pipeline, analytics services, PDF generation, MySQL persistence, uploaded files, and generated reports.
+- `frontend/`: Vite React application for login, dashboard, client management, report generation, and report history.
+- `node_modules/`: Root dependency install directory.
+- `package.json`: Root-level package with shared UI dependencies.
+- `package-lock.json`: Lockfile for root dependencies.
+- `.gitignore`: Root ignore rules.
+- `README.md`: This project documentation.
 
-src/services/api.js
-    =>Frontend API helper file.
-    =>Responsibilities:
-        1.connect frontend to backend APIs
-        2.handle axios/fetch requests
-        3.centralize API calls
+## Backend
 
-Backend
-    =>The backend is built using:
-        1.Node.js
-        2.Express.js
-        3.Multer
-        4.CSV/XLSX Parsers
-        5.Puppeteer (future PDF export)
-    =>The backend handles:
-        1.file uploads
-        2.parsing
-        3.normalization
-        4.analytics processing
-        5.KPI generation
-        6.chart building
-        7.report generation
-        8.PDF exports
+### Backend Structure
 
-Backend Structure
+```text
 backend/
-│
-├── config/
-│   └── db.js
-│
-├── controllers/
-│   └── uploadController.js
-│
-├── generated-reports/
-│
-├── middleware/
-│   └── uploadMiddleware.js
-│
-├── node_modules/
-│
-├── routes/
-│   ├── authRoutes.js
-│   ├── pdfRoutes.js
-│   ├── reportRoutes.js
-│   └── uploadRoutes.js
-│
-├── services/
-│   │
-│   ├── ai/
-│   │   ├── insightGenerator.js
-│   │   ├── recommendationEngine.js
-│   │   └── summaryGenerator.js
-│   │
-│   ├── analytics/
-│   │   ├── comparisonEngine.js
-│   │   ├── kpiCalculator.js
-│   │   └── trendAnalyzer.js
-│   │
-│   ├── charts/
-│   │   ├── chartBuilder.js
-│   │   └── chartConfig.js
-│   │
-│   ├── detectors/
-│   │   └── platformDetector.js
-│   │
-│   ├── normalizers/
-│   │   ├── facebookNormalizer.js
-│   │   ├── genericNormalizer.js
-│   │   ├── instagramNormalizer.js
-│   │   ├── seoNormalizer.js
-│   │   └── unifiedNormalizer.js
-│   │
-│   ├── parsers/
-│   │   ├── csvParser.js
-│   │   ├── excelParser.js
-│   │   └── sheetExtractor.js
-│   │
-│   ├── reports/
-│   │   ├── pdfGenerator.js
-│   │   ├── reportAssembler.js
-│   │   └── templateEngine.js
-│   │
-│   ├── storage/
-│   │   └── fileManager.js
-│   │
-│   ├── parser.js
-│   ├── normalizer.js
-│   ├── chartBuilder.js
-│   ├── comparisonEngine.js
-│   ├── pdfGenerator.js
-│   └── reportGenerator.js
-│
-├── templates/
-│   ├── genericTemplate.html
-│   ├── seoTemplate.html
-│   └── socialTemplate.html
-│
-├── uploads/
-│
-├── utils/
-│   ├── dateUtils.js
-│   ├── helpers.js
-│   └── metricUtils.js
-│
-├── .env
-├── .gitignore
-├── package.json
-├── package-lock.json
-└── server.js
+  assets/
+  config/
+  controllers/
+  database/
+  generated-reports/
+  middleware/
+  node_modules/
+  routes/
+  services/
+  templates/
+  uploads/
+  utils/
+  .env
+  .gitignore
+  package.json
+  package-lock.json
+  server.js
+```
 
-Backend File Responsibilities
-server.js
-    =>Main Express application.
-    =>Responsibilities:
-        1.initialize Express server
-        2.configure middleware
-        3.enable CORS
-        4.register routes
-        5.serve uploads folder
-        6.start backend server
+### Backend Top-Level Files and Folders
 
-config/db.js
-    =>Database configuration file.
-    =>Responsibilities:
-        1.connect MySQL database
-        2.export database connection
-        3.manage DB credentials
-    <!-- Currently optional. -->
-    =>Future:
-        1.report storage
-        2.client management
-        3.user authentication
-        4.analytics history
+- `assets/`: Static backend assets used by generated reports.
+- `assets/logo.png`: Brand/report logo asset.
+- `config/`: Runtime configuration modules.
+- `controllers/`: Express request handlers.
+- `database/`: SQL schema files.
+- `generated-reports/`: Runtime output directory for generated PDF files.
+- `middleware/`: Express middleware such as Multer upload handling.
+- `node_modules/`: Backend dependency install directory.
+- `routes/`: Express route definitions.
+- `services/`: Core business logic for parsing, normalization, analytics, reports, PDF output, and database writes.
+- `templates/`: Placeholder HTML templates for future HTML-based report rendering.
+- `uploads/`: Runtime storage for raw uploaded files.
+- `utils/`: Placeholder utility folder.
+- `.env`: Local backend environment variables.
+- `.gitignore`: Backend ignore rules.
+- `package.json`: Backend scripts and dependencies. Main scripts are `npm start` and `npm run dev`.
+- `package-lock.json`: Backend dependency lockfile.
+- `server.js`: Main Express application. Enables CORS/JSON middleware, serves `/uploads` and `/generated-reports`, registers API routes, and starts the server.
 
-Controllers
-controllers/uploadController.js
-    =>Handles upload logic.
-    =>Responsibilities:
-        1.validate uploads
-        2.receive uploaded files
-        3.return upload response
-        4.later trigger parsing pipeline
+### Backend API Routes
 
-Middleware
-middleware/uploadMiddleware.js
-    =>Multer upload configuration.
-    =>Responsibilities:
-        1.upload handling
-        2.file validation
-        3.file naming
-        4.upload destination configuration
-    =>Supported Formats:
-        1.CSV
-        2.XLSX
-        3.DOCX
-        4.PDF
+- `GET /`: Health/test response: `MarketLens AI Backend Running`.
+- `GET /api/auth`: Placeholder auth route.
+- `POST /api/upload`: Uploads and processes report files.
+- `GET /api/report`: Placeholder report route.
+- `GET /api/pdf/test`: Generates a test PDF from hardcoded sample data.
+- `GET /api/report-history`: Returns saved report history.
+- `GET /api/dashboard-stats`: Returns dashboard totals and recent reports.
+- `GET /api/clients`: Lists clients.
+- `POST /api/clients`: Creates a client.
+- `GET /api/clients/:id`: Fetches one client.
+- `PUT /api/clients/:id`: Updates one client.
+- `DELETE /api/clients/:id`: Deletes one client.
 
-Routes
-routes/uploadRoutes.js
-    =>Upload APIs.
-    =>Responsibilities:
-        1.receive analytics uploads
-        2.trigger parsing
-        3.store uploaded files
+### Backend Config, Database, Middleware
 
-routes/reportRoutes.js
-    =>Report APIs.
-    =>Responsibilities:
-        1.generate analytics reports
-        2.return KPIs
-        3.return charts
-        4.return insights
+- `config/database.js`: Creates and exports a MySQL connection pool using `mysql2/promise` and `.env` database credentials.
+- `database/schema.sql`: Defines `clients`, `reports`, `services`, `instagram_analytics`, and `seo_analytics` tables. Note: code currently also uses `report_display_name` and `client_aliases` on `clients`, so the live database needs those columns too.
+- `middleware/uploadMiddleware.js`: Configures Multer disk storage in `uploads/`, gives uploaded files timestamp-based names, and allows `.csv`, `.xlsx`, `.txt`, `.pdf`, and `.docx`.
 
-routes/pdfRoutes.js
-    =>PDF APIs.
-    =>Responsibilities:
-        1.generate downloadable PDF reports
-        2.return PDF file path
+### Backend Controllers
 
-routes/authRoutes.js
-    =>Authentication APIs.
-    =>Responsibilities:
-        1.login
-        2.registration later
-        3.JWT authentication later
-    =>Current State:
-        1.placeholder route structure
+- `controllers/uploadController.js`: Main upload pipeline. Validates files, client, month, and year; parses CSV/XLSX; filters Excel sheets by selected client aliases; detects platform; normalizes data; generates Instagram/SEO analytics; builds charts; assembles reports; generates PDF; saves report data to MySQL; returns processed files and PDF metadata.
+- `controllers/clientController.js`: Handles client CRUD responses by calling database client services.
+- `controllers/dashboardStatsController.js`: Returns dashboard stats from the database service.
+- `controllers/reportHistoryController.js`: Returns saved report history from the database service.
 
-Services
-    =>The services folder contains the entire processing engine.
-AI Services
-services/ai/insightGenerator.js
-    =>Responsibilities:
-        1.generate analytics insights
-        2.detect strong/weak performance
-        3.summarize trends
+### Backend Routes
 
-services/ai/recommendationEngine.js
-    =>Responsibilities:
-        1.generate marketing recommendations
-        2.suggest improvements
-        3.identify optimization opportunities
+- `routes/authRoutes.js`: Placeholder `GET /` route for auth status.
+- `routes/clientRoutes.js`: Maps client CRUD endpoints to `clientController`.
+- `routes/dashboardStatsRoutes.js`: Maps dashboard stats endpoint to `dashboardStatsController`.
+- `routes/pdfRoutes.js`: Test-only PDF generation route using `clientPdfGenerator`.
+- `routes/reportHistoryRoutes.js`: Maps report history endpoint to `reportHistoryController`.
+- `routes/reportRoutes.js`: Placeholder report route.
+- `routes/uploadRoutes.js`: Accepts multiple files from the `files` field and sends them to `uploadController.uploadFile`.
 
-services/ai/summaryGenerator.js
-    =>Responsibilities:
-        1.generate executive summaries
-        2.produce report conclusions
+### Backend Services
 
-Analytics Services
-services/analytics/kpiCalculator.js
-    =>Responsibilities:
-        1.calculate KPIs
-        2.engagement rates
-        3.growth percentages
-        4.totals
-        5.performance metrics
+#### Analytics
 
-services/analytics/trendAnalyzer.js
-    =>Responsibilities:
-        1.analyze trends
-        2.detect growth/decline
-        3.identify performance patterns
+- `services/analytics/instagramAnalytics.js`: Calculates Instagram totals, averages, engagement rate, best post, post type counts, default comparisons, insights, and recommendations.
+- `services/analytics/seoAnalytics.js`: Builds SEO client summaries from normalized SEO rows and attaches insights and recommendations.
+- `services/analytics/monthComparisonEngine.js`: Shared difference, growth percent, and trend calculation helpers.
+- `services/analytics/buildHistoricalComparisons.js`: Builds Instagram and SEO comparisons between current analytics and previous saved database analytics.
+- `services/analytics/comparisonEngine.js`: Empty placeholder.
+- `services/analytics/kpiCalculator.js`: Empty placeholder.
+- `services/analytics/trendAnalyzer.js`: Empty placeholder.
 
-services/analytics/comparisonEngine.js
-    =>Responsibilities:
-        1.compare months
-        2.compare campaigns
-        3.calculate percentage growth
-        4.generate comparison metrics
+#### Charts
 
-services/analytics/instagramAnalytics.js
-    → Instagram-specific analytics
-    → Reels performance
-    → Reach analytics
-    → Engagement insights
-    → Best post detection
-services/analytics/seoAnalytics.js
+- `services/charts/chartBuilder.js`: Builds frontend-ready chart data for Instagram post types/engagement and SEO client performance.
+- `services/charts/chartConfig.js`: Empty placeholder.
 
-    → SEO-specific analytics
-    → Organic traffic summaries
-    → Keyword growth
-    → Technical SEO summaries
-    → GBP analytics
+#### Clients
 
-Chart Services
-services/charts/chartBuilder.js
-    =>Responsibilities:
-        1.build frontend-ready chart datasets
-    =>Example Output:
-        [
-            {
-                "date": "Apr 1",
-                "reach": 1200
-            }
-        ]
-    =>Frontend only renders the data.
+- `services/clients/clientResolver.js`: Normalizes client names, applies hardcoded aliases, and resolves a client name from platform data.
+- `services/clients/clientDataGrouper.js`: Groups processed platform files into client-level service bundles.
+- `services/clients/clientReportBuilder.js`: Builds a generic client report object with overview and sections.
 
-services/charts/chartConfig.js
-    =>Responsibilities:
-        1.reusable chart configuration
-        2.chart styling
-        3.chart color management
+#### Database
 
-Detector Services
-services/detectors/platformDetector.js
-    =>Responsibilities:
-        1.detect uploaded platform type
-        2.identify:
-            a)Instagram data
-            b)Facebook data
-            c)SEO reports
-            d)generic marketing reports
+- `services/database/clientService.js`: Client CRUD, client lookup, alias matching, text normalization, and find-or-create logic.
+- `services/database/dashboardStatsService.js`: Counts clients, reports, distinct services, PDFs, latest report, and recent reports.
+- `services/database/fetchPreviousInstagramAnalytics.js`: Finds the previous month Instagram analytics row for a client.
+- `services/database/fetchPreviousSEOAnalytics.js`: Finds the previous month SEO analytics row for a client.
+- `services/database/instagramAnalyticsService.js`: Saves Instagram summary metrics for a service.
+- `services/database/reportHistoryService.js`: Lists saved reports with client name, month, year, PDF path, and generation time.
+- `services/database/reportLookupService.js`: Finds an existing report/service for duplicate checks. Currently not active in `saveProcessedReport`.
+- `services/database/reportService.js`: Creates a row in `reports`.
+- `services/database/saveProcessedReport.js`: Persists generated client reports. Creates/fetches client, creates report and services, fetches previous analytics, attaches historical comparisons, and saves Instagram/SEO analytics.
+- `services/database/seoAnalyticsService.js`: Saves SEO metrics for each SEO client summary.
+- `services/database/serviceService.js`: Creates a row in `services`.
 
-Parser Services
-services/parsers/csvParser.js
-    =>Responsibilities:
-        1.parse CSV files
-        2.convert rows to JSON
+#### Detectors
 
-services/parsers/excelParser.js
-    =>Responsibilities:
-        1.parse XLSX workbooks
-        2.read Excel files
+- `services/detectors/platformDetector.js`: Detects platform from filename, sheet names, columns, and row text. Supports SEO, Instagram, Facebook, Meta Ads, Google Ads, YouTube, LinkedIn, website analytics, generic, Excel, generic documents, and unknown.
 
-services/parsers/sheetExtractor.js
-    =>Responsibilities:
-        1.extract multiple Excel sheets
-        2.separate client sheets
-    =>Important for SEO reports where:
-        1.one workbook
-        2.multiple client sheets
+#### Insights
 
-Normalizer Services
-services/normalizers/instagramNormalizer.js
-    =>Responsibilities:
-        1.normalize Instagram analytics
-        2.standardize Instagram metrics
+- `services/insights/instagramInsightsGenerator.js`: Converts Instagram analytics into readable insight strings.
+- `services/insights/seoInsightsGenerator.js`: Converts SEO client summaries into per-client insight arrays.
 
-services/normalizers/facebookNormalizer.js
-    =>Responsibilities:
-        1.normalize Facebook analytics
+#### Normalizers
 
-services/normalizers/seoNormalizer.js
-    =>Responsibilities:
-        1.normalize SEO report data
+- `services/normalizers/genericNormalizer.js`: Cleans CSV/Excel column keys and returns generic row objects.
+- `services/normalizers/instagramNormalizer.js`: Maps Instagram export columns into a standard post object with numeric metrics.
+- `services/normalizers/seoNormalizer.js`: Converts each Excel sheet into SEO rows with label, previous month, current month, difference, and notes.
+- `services/normalizers/unifiedNormalizer.js`: Dispatches normalization by detected platform. Instagram and SEO use specific normalizers; future ad/social/web platforms currently fall back to generic normalization.
+- `services/normalizers/facebookNormalizer.js`: Empty placeholder.
 
-services/normalizers/genericNormalizer.js
-    =>Responsibilities:
-        1.normalize unknown file formats
-        2.fallback normalization logic
+#### Parsers
 
-services/normalizers/unifiedNormalizer.js
-    =>Responsibilities:
-        1.combine all normalized datasets
-        2.create unified report structure
+- `services/parsers/csvParser.js`: Streams CSV files and resolves parsed rows.
+- `services/parsers/excelParser.js`: Reads an Excel workbook and extracts all sheets.
+- `services/parsers/sheetExtractor.js`: Converts workbook sheets into `{ sheetName, rows }` objects.
 
-Report Services
-services/reports/reportAssembler.js
-    =>Responsibilities:
-        1.combine:
-            a)KPIs
-            b)charts
-            c)insights
-            d)comparisons
-            e)recommendations
-            f)summaries
-    =>Main report intelligence layer.
+#### PDF Generation
 
-services/reports/templateEngine.js
-    =>Responsibilities:
-        1.render HTML templates
-        2.inject analytics into templates
+- `services/pdf/clientPdfGenerator.js`: Creates a PDFKit document, writes all report sections, adds footers, saves the PDF to `generated-reports`, and returns file metadata.
+- `services/pdf/components/chartBlock.js`: Draws a chart image inside a styled PDF card.
+- `services/pdf/components/highlightBox.js`: Draws reusable highlighted text boxes.
+- `services/pdf/components/kpiCard.js`: Draws KPI cards.
+- `services/pdf/components/pageFooter.js`: Draws report footer with client name and page numbers.
+- `services/pdf/components/pageHeader.js`: Draws report section header with brand, client, month, and year.
+- `services/pdf/components/sectionDivider.js`: Draws a horizontal divider.
+- `services/pdf/charts/chartImageGenerator.js`: Generates a generic bar chart image buffer.
+- `services/pdf/charts/pieChartGenerator.js`: Generates a pie chart image buffer.
+- `services/pdf/charts/seoChartGenerator.js`: Generates an SEO bar chart image buffer.
+- `services/pdf/sections/coverPageSection.js`: Draws the PDF cover page.
+- `services/pdf/sections/executiveSummarySection.js`: Draws summary highlights based on included services.
+- `services/pdf/sections/serviceOverviewSection.js`: Draws service-level overview cards.
+- `services/pdf/sections/insightsSection.js`: Draws strategic insights.
+- `services/pdf/sections/recommendationsSection.js`: Draws strategic recommendations.
+- `services/pdf/sections/comparisonSection.js`: Draws month-over-month comparison cards.
+- `services/pdf/sections/instagramSection.js`: Draws Instagram KPIs, charts, content mix, insights, and recommendations.
+- `services/pdf/sections/seoSection.js`: Draws SEO metrics and charts.
+- `services/pdf/sections/conclusionSection.js`: Draws closing summary, focus areas, and growth outlook.
+- `services/pdf/utils/pdfHelpers.js`: Older helper functions for section titles, subtitles, paragraphs, and bullet lists.
 
-services/reports/pdfGenerator.js
-    =>Responsibilities:
-        1.generate PDF reports
-        2.export final reports
-        3.create downloadable PDFs
-    =>Future:
-        1.Puppeteer integration
+#### Recommendations
 
-Storage Services
-services/storage/fileManager.js
-    =>Responsibilities:
-        1.manage uploads
-        2.manage generated reports
-        3.manage temporary files
+- `services/recommendations/instagramRecommendationEngine.js`: Creates Instagram recommendations from engagement rate, best post type, and posting frequency.
+- `services/recommendations/seoRecommendationEngine.js`: Creates SEO recommendations from organic traffic, average position, and Google Business Profile activity.
 
-<!-- Legacy Service Files
-The following files currently exist for backward compatibility:
-    services/parser.js
-    services/normalizer.js
-    services/chartBuilder.js
-    services/comparisonEngine.js
-    services/pdfGenerator.js
-    services/reportGenerator.js
-These should NOT be deleted until all logic is migrated to the new modular structure. -->
+#### Reports
 
-Templates
-templates/genericTemplate.html
-    =>Fallback report template.
-    =>Used for:
-        1.generic marketing reports
-        2.unsupported platforms
+- `services/reports/reportAssembler.js`: Builds a platform-level report object containing title, source file, overview, analytics, charts, and raw data.
+- `services/reports/clientReportAssembler.js`: Builds the final client monthly report, filters out empty SEO data, and includes available service sections.
+- `services/reports/clientPdfReportGenerator.js`: Wraps PDF generation and returns client name, services, PDF metadata, and download URL.
+- `services/reports/pdfGenerator.js`: Empty placeholder.
+- `services/reports/templateEngine.js`: Empty placeholder.
 
-templates/seoTemplate.html
-    =>SEO report template.
-    =>Used for:
-        1.SEO analytics
-        2.keyword reports
-        3.ranking reports
+#### AI, Storage, Utils
 
-templates/socialTemplate.html
-    =>Social media report template.
-    =>Used for:
-        1.Instagram reports
-        2.Facebook reports
-        3.social analytics
+- `services/ai/insightGenerator.js`: Empty placeholder.
+- `services/ai/recommendationEngine.js`: Empty placeholder.
+- `services/ai/summaryGenerator.js`: Empty placeholder.
+- `services/storage/fileManager.js`: Empty placeholder.
+- `utils/dateUtils.js`: Empty placeholder.
+- `utils/helpers.js`: Empty placeholder.
+- `utils/metricUtils.js`: Empty placeholder.
 
-Uploads Folder
-uploads/
-    =>Stores uploaded raw files.
-    =>Supported:
-        1.CSV
-        2.XLSX
-        3.DOCX
-        4.PDF
+### Backend Templates
 
-Generated Reports Folder
-generated-reports/
-    =>Stores:
-        1.generated PDFs
-        2.exported reports
-        3.temporary report outputs
+- `templates/genericTemplate.html`: Empty placeholder.
+- `templates/seoTemplate.html`: Empty placeholder.
+- `templates/socialTemplate.html`: Empty placeholder.
 
-Utils
-utils/dateUtils.js
-    =>Responsibilities:
-        1.date formatting
-        2.month calculations
-        3.reporting period calculations
+## Frontend
 
-utils/metricUtils.js
-    =>Responsibilities:
-        1.percentage calculations
-        2.metric transformations
-        3.KPI helper calculations
+### Frontend Structure
 
-utils/helpers.js
-    =>Responsibilities:
-        1.generic reusable helper functions
+```text
+frontend/
+  dist/
+  node_modules/
+  public/
+  src/
+  .gitignore
+  eslint.config.js
+  index.html
+  package.json
+  package-lock.json
+  README.md
+  vite.config.js
+```
 
-Backend Processing Flow
-        Upload File
-            ↓
-        Store File
-            ↓
-        Detect Platform
-            ↓
-        Parse File
-            ↓
-        Extract Sheets
-            ↓
-        Normalize Data
-            ↓
-        Calculate KPIs
-            ↓
-        Analyze Trends
-            ↓
-        Build Charts
-            ↓
-        Generate Insights
-            ↓
-        Assemble Report
-            ↓
-        Generate PDF
+### Frontend Top-Level Files and Folders
 
-Important Development Rule
-    =>No fake analytics values should ever be generated.
-    =>Every:
-        1.KPI
-        2.chart
-        3.insight
-        4.comparison
-        5.summary
-        6.recommendation
-    =>must come from actual uploaded client data.
-    =>If data is unavailable:
-        1.show 0
-        2.show N/A
-        3.hide the chart
-        4.or display "No data available"
-    =>Never invent metrics.
+- `dist/`: Vite production build output.
+- `node_modules/`: Frontend dependency install directory.
+- `public/`: Static assets served by Vite.
+- `src/`: React application source.
+- `.gitignore`: Frontend ignore rules.
+- `eslint.config.js`: ESLint flat config for JS/JSX, React hooks, and Vite refresh.
+- `index.html`: Vite HTML shell with `#root` and `/src/main.jsx`.
+- `package.json`: Frontend scripts and dependencies.
+- `package-lock.json`: Frontend dependency lockfile.
+- `README.md`: Default Vite template README.
+- `vite.config.js`: Vite config using the React plugin.
+
+### Frontend Public Assets
+
+- `public/favicon.svg`: Browser favicon.
+- `public/icons.svg`: Static SVG icon asset.
+
+### Frontend Source Files
+
+- `src/main.jsx`: React entry point. Imports global CSS and renders `App` into `#root` inside `StrictMode`.
+- `src/App.jsx`: Defines routes for `/`, `/dashboard`, `/report`, `/reports-history`, and `/clients`.
+- `src/index.css`: Main stylesheet for login, dashboard, report generation, report history, and clients UI. Includes global Times New Roman styling and Material UI overrides.
+- `src/App.css`: App container background/layout styles. Currently not imported by `main.jsx`.
+
+### Frontend Pages
+
+- `src/pages/Login.jsx`: Login screen with hardcoded admin credentials `admin@gmail.com` / `admin123`, then navigates to dashboard.
+- `src/pages/Dashboard.jsx`: Dashboard page. Fetches dashboard stats, shows metric cards, sidebar navigation, recent activity, and quick insights.
+- `src/pages/ReportPage.jsx`: Main report generation page. Fetches clients, accepts selected client/month/files, posts form data to `/api/upload`, and shows generated PDF preview/download links.
+- `src/pages/ReportsHistory.jsx`: Fetches saved report history and shows preview/download links for generated PDFs.
+- `src/pages/Clients.jsx`: Client management page. Lists clients, opens add/edit modal, creates/updates/deletes clients through `/api/clients`.
+
+### Frontend Components
+
+- `src/components/UploadReportForm.jsx`: Older standalone upload form that posts files/month/year directly to `/api/upload`. It is not currently routed from `App.jsx`.
+- `src/components/ChartsSection.jsx`: Empty placeholder.
+- `src/components/ComparisonSection.jsx`: Empty placeholder.
+- `src/components/KPISection.jsx`: Empty placeholder.
+- `src/components/Navbar.jsx`: Empty placeholder.
+- `src/components/ReportPreview.jsx`: Empty placeholder.
+- `src/components/UploadSection.jsx`: Empty placeholder.
+
+### Frontend Services
+
+- `src/services/api.js`: Central API helper for uploading report files, fetching report history, and fetching dashboard stats.
+
+## Database Tables
+
+- `clients`: Stores client records.
+- `reports`: Stores report month/year, client link, generated PDF path, and creation time.
+- `services`: Stores service/platform rows per report and raw file name.
+- `instagram_analytics`: Stores saved Instagram summary metrics.
+- `seo_analytics`: Stores saved SEO summary metrics.
+
+## Supported Uploads
+
+The upload middleware accepts `.csv`, `.xlsx`, `.txt`, `.pdf`, and `.docx`, but the active parser currently processes only `.csv`, `.xlsx`, and `.xls`. Other accepted file types will upload but fail processing until parsers are implemented.
+
+## Current Notes
+
+- Authentication is frontend-only and temporary.
+- Several files are placeholders for future AI, storage, utility, template, and reusable frontend component work.
+- `reportRoutes.js` and `authRoutes.js` are placeholder routes.
+- `pdfRoutes.js` contains a test route with hardcoded sample data and is not the main user report-generation path.
+- Runtime folders `backend/uploads`, `backend/generated-reports`, `frontend/dist`, and all `node_modules` folders are generated or environment-specific.

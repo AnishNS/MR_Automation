@@ -1,10 +1,28 @@
 const { standardizeClientName } = require("./clientResolver");
+
+const getServiceKey = (platform = "") => {
+  const serviceMap = {
+    instagram: "instagram",
+    seo: "seo",
+    meta_ads: "metaAds",
+    facebook: "facebook",
+    youtube: "youtube",
+    linkedin: "linkedin",
+    google_ads: "googleAds",
+    website_analytics: "websiteAnalytics",
+    ads: "metaAds",
+    website: "websiteAnalytics",
+  };
+
+  return serviceMap[platform] || platform || "generic";
+};
+
 const groupByClient = (processedFiles = []) => {
   const clients = {};
 
   const ensureClient = (clientName) => {
     const cleanClientName =
-    standardizeClientName(clientName) || "Unknown Client";
+      standardizeClientName(clientName) || "Unknown Client";
 
     if (!clients[cleanClientName]) {
       clients[cleanClientName] = {
@@ -60,7 +78,7 @@ const groupByClient = (processedFiles = []) => {
 
     client.files.push(file);
 
-    const serviceName = file.platform || file.service || "generic";
+    const serviceName = getServiceKey(file.platform || file.service);
 
     client.services[serviceName] = {
       platform: file.platform,
@@ -75,4 +93,5 @@ const groupByClient = (processedFiles = []) => {
 
 module.exports = {
   groupByClient,
+  getServiceKey,
 };

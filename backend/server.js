@@ -23,6 +23,7 @@ const reportRoutes = require("./routes/reportRoutes");
 const authRoutes = require("./routes/authRoutes");
 const pdfRoutes = require("./routes/pdfRoutes");
 const dashboardStatsRoutes = require("./routes/dashboardStatsRoutes");
+const clientRoutes = require("./routes/clientRoutes");
 
 /* API ROUTES */
 
@@ -32,6 +33,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/pdf", pdfRoutes);
 app.use("/api/report-history", reportHistoryRoutes);
 app.use("/api/dashboard-stats", dashboardStatsRoutes);
+app.use("/api/clients", clientRoutes);
 
 /* TEST ROUTE */
 
