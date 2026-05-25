@@ -2,6 +2,7 @@ const instagramNormalizer = require("./instagramNormalizer");
 const seoNormalizer = require("./seoNormalizer");
 const genericNormalizer = require("./genericNormalizer");
 const facebookNormalizer = require("./facebookNormalizer");
+const youtubeNormalizer = require("./youtubeNormalizer");
 
 /*
   Future Normalizers
@@ -25,7 +26,7 @@ const normalizeLinkedIn = (rows) => {
 };
 
 const normalizeYouTube = (rows) => {
-  return genericNormalizer(rows);
+  return youtubeNormalizer(rows);
 };
 
 const normalizeWebsiteAnalytics = (rows) => {
