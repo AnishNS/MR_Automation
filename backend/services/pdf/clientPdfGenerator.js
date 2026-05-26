@@ -12,6 +12,7 @@ const drawInsightsSection = require("./sections/insightsSection");
 const drawRecommendationsSection = require("./sections/recommendationsSection");
 const drawComparisonSection = require("./sections/comparisonSection");
 const drawPageFooter = require("../pdf/components/pageFooter");
+const drawFacebookSection = require("./sections/facebookSection");
 
 const generateClientPdf = async (reportData) => {
   return new Promise(async(resolve, reject) => {
@@ -43,6 +44,7 @@ const generateClientPdf = async (reportData) => {
       drawComparisonSection(doc, reportData);
       await drawInstagramSection(doc, reportData.instagram, reportData);
       await drawSEOSection(doc, reportData.seo);
+      await drawFacebookSection(doc, reportData.facebook, reportData);
       drawConclusionSection(doc, reportData);
 
       const range = doc.bufferedPageRange();

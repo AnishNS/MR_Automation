@@ -70,6 +70,11 @@ const Dashboard = () => {
         >
           Reports
         </li>
+        <li
+          onClick={() => navigate("/clients")}
+        >
+          Clients
+        </li>
 
         <li>
           Analytics

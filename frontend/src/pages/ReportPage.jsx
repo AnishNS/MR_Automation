@@ -1,83 +1,123 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
   Paper,
   Typography,
-  TextField,
   Button,
 } from "@mui/material";
-import { uploadReportFiles } from "../services/api";
 
+import { uploadReportFiles } from "../services/api";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+
+const API_BASE_URL = "http://localhost:5000/api";
 
 const ReportPage = () => {
   const navigate = useNavigate();
+
   const [files, setFiles] = useState([]);
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
-  const [selectedClientName, setSelectedClientName] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [clients, setClients] = useState([]);
+  const [selectedClientId, setSelectedClientId] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
-  const handleGenerateReport = async () => {
-  try {
-    if (!files.length) {
-      alert("Please upload at least one file");
-      return;
-    }
-    if (!month.trim()) {
-      alert("Please enter report month");
-      return;
-    }
+  const selectedClient = clients.find(
+    (client) => String(client.id) === String(selectedClientId)
+  );
 
-    if (!year.trim()) {
-      alert("Please enter report year");
-      return;
-    }
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/clients`);
+        const data = await response.json();
 
-    if (!selectedClientName.trim()) {
-      alert("Please enter selected client name");
-      return;
-    }
+        if (data.success) {
+          setClients(data.clients);
+        }
+      } catch (error) {
+        console.error("Fetch clients error:", error);
+      }
+    };
 
-    const formData = new FormData();
+    fetchClients();
+  }, []);
 
-    Array.from(files).forEach((file) => {
-      formData.append("files", file);
+  const getSelectedMonthName = () => {
+    if (!selectedMonth) return "-";
+
+    return new Date(`${selectedMonth}-01`).toLocaleString("default", {
+      month: "long",
     });
+  };
 
-    formData.append("month", month);
-    formData.append("year", year);
+  const getSelectedYear = () => {
+    if (!selectedMonth) return "-";
+    return selectedMonth.split("-")[0];
+  };
 
-    formData.append(
-      "selectedClientName",
-      selectedClientName.trim()
-    );
+  const handleGenerateReport = async () => {
+    try {
+      if (!files.length) {
+        alert("Please upload at least one file");
+        return;
+      }
 
-    setLoading(true);
+      if (!selectedClientId) {
+        alert("Please select client");
+        return;
+      }
 
-    const response = await uploadReportFiles(formData);
+      if (!selectedMonth) {
+        alert("Please select report month");
+        return;
+      }
 
-    setResult(response);
+      const [year, month] = selectedMonth.split("-");
 
-    alert("Report generated successfully");
-  } catch (error) {
-    console.error(error);
+      const formData = new FormData();
 
-    alert(
-      error?.response?.data?.message ||
-      "Failed to generate report"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+      Array.from(files).forEach((file) => {
+        formData.append("files", file);
+      });
+
+      formData.append("month", month);
+      formData.append("year", year);
+      formData.append("selectedClientId", selectedClientId);
+
+      if (selectedClient) {
+        formData.append("selectedClientName", selectedClient.client_name);
+        formData.append(
+          "reportDisplayName",
+          selectedClient.report_display_name || selectedClient.client_name
+        );
+        formData.append(
+          "clientAliases",
+          selectedClient.client_aliases || selectedClient.client_name
+        );
+      }
+
+      setLoading(true);
+
+      const response = await uploadReportFiles(formData);
+      setResult(response);
+
+      alert("Report generated successfully");
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error?.response?.data?.message ||
+          "Failed to generate report"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="report-page">
-
-      {/* HEADER */}
       <button
         className="back-btn"
         onClick={() => navigate("/dashboard")}
@@ -86,7 +126,6 @@ const ReportPage = () => {
       </button>
 
       <div className="report-header">
-
         <Typography
           variant="h3"
           className="report-title"
@@ -100,13 +139,9 @@ const ReportPage = () => {
         >
           Configure and generate your monthly marketing report
         </Typography>
-
       </div>
 
-      {/* REPORT CONFIG */}
-
       <Paper className="report-section">
-
         <Typography
           variant="h5"
           className="section-title"
@@ -115,48 +150,36 @@ const ReportPage = () => {
         </Typography>
 
         <div className="report-form-grid">
+          <div className="report-control">
+            <label>Select Client *</label>
 
-        <TextField
-          label="Month"
-          required
-          placeholder="April"
-          variant="outlined"
-          fullWidth
-          className="custom-input"
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-        />
+            <select
+              value={selectedClientId}
+              onChange={(e) => setSelectedClientId(e.target.value)}
+            >
+              <option value="">Choose Client</option>
 
-        <TextField
-          label="Year"
-          required
-          placeholder="2026"
-          variant="outlined"
-          fullWidth
-          className="custom-input"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-        />
+              {clients.map((client) => (
+                <option key={client.id} value={client.id}>
+                  {client.report_display_name || client.client_name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <TextField
-          label="Selected Client Name"
-          required
-          placeholder="StyleWell Interior"
-          variant="outlined"
-          fullWidth
-          className="custom-input"
-          value={selectedClientName}
-          onChange={(e) => setSelectedClientName(e.target.value)}
-        />
+          <div className="report-control">
+            <label>Select Month *</label>
 
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            />
+          </div>
         </div>
-
       </Paper>
 
-      {/* FILE UPLOAD */}
-
       <Paper className="report-section">
-
         <Typography
           variant="h5"
           className="section-title"
@@ -165,7 +188,6 @@ const ReportPage = () => {
         </Typography>
 
         <div className="upload-box">
-
           <UploadFileIcon className="upload-icon" />
 
           <Typography className="upload-title">
@@ -173,8 +195,7 @@ const ReportPage = () => {
           </Typography>
 
           <Typography className="upload-subtitle">
-            Supported formats:
-            CSV, XLSX, DOCX, TXT, PDF
+            Supported formats: CSV, XLSX, DOCX, TXT, PDF
           </Typography>
 
           <Button
@@ -184,32 +205,32 @@ const ReportPage = () => {
           >
             Upload File
 
-          <input
-            type="file"
-            hidden
-            multiple
-            accept=".csv,.xlsx,.xls"
-            onChange={(e) => {
-              const newFiles = Array.from(e.target.files);
+            <input
+              type="file"
+              hidden
+              multiple
+              accept=".csv,.xlsx,.xls,.doc,.docx,.txt,.pdf"
+              onChange={(e) => {
+                const newFiles = Array.from(e.target.files);
 
-              setFiles((prevFiles) => {
-                const existingFiles = Array.from(prevFiles);
+                setFiles((prevFiles) => {
+                  const existingFiles = Array.from(prevFiles);
 
-                const uniqueNewFiles = newFiles.filter(
-                  (newFile) =>
-                    !existingFiles.some(
-                      (existingFile) =>
-                        existingFile.name === newFile.name &&
-                        existingFile.size === newFile.size
-                    )
-                );
+                  const uniqueNewFiles = newFiles.filter(
+                    (newFile) =>
+                      !existingFiles.some(
+                        (existingFile) =>
+                          existingFile.name === newFile.name &&
+                          existingFile.size === newFile.size
+                      )
+                  );
 
-                return [...existingFiles, ...uniqueNewFiles];
-              });
+                  return [...existingFiles, ...uniqueNewFiles];
+                });
 
-              e.target.value = "";
-            }}
-          />
+                e.target.value = "";
+              }}
+            />
           </Button>
 
           {files.length > 0 && (
@@ -217,14 +238,19 @@ const ReportPage = () => {
               <p>Selected Files:</p>
 
               {Array.from(files).map((file, index) => (
-                <div className="selected-file-item" key={`${file.name}-${index}`}>
+                <div
+                  className="selected-file-item"
+                  key={`${file.name}-${index}`}
+                >
                   <span>{file.name}</span>
 
                   <button
                     type="button"
                     onClick={() => {
                       setFiles((prevFiles) =>
-                        Array.from(prevFiles).filter((_, fileIndex) => fileIndex !== index)
+                        Array.from(prevFiles).filter(
+                          (_, fileIndex) => fileIndex !== index
+                        )
                       );
                     }}
                   >
@@ -235,33 +261,29 @@ const ReportPage = () => {
             </div>
           )}
         </div>
-
       </Paper>
 
-      {/* ACTION BUTTONS */}
-
       <div className="report-actions">
-
         <Button
           variant="outlined"
           className="secondary-btn"
+          onClick={() => navigate("/dashboard")}
         >
           Cancel
         </Button>
 
-      <Button
-      variant="contained"
-      className="primary-btn"
-      onClick={handleGenerateReport}
-      disabled={loading}
-    >
-      {loading ? "Generating..." : "Generate Report"}
-    </Button>
+        <Button
+          variant="contained"
+          className="primary-btn"
+          onClick={handleGenerateReport}
+          disabled={loading}
+        >
+          {loading ? "Generating..." : "Generate Report"}
+        </Button>
+      </div>
 
-    </div>
       {result?.success && (
         <Paper className="report-section">
-
           <Typography
             variant="h5"
             className="section-title"
@@ -270,35 +292,35 @@ const ReportPage = () => {
           </Typography>
 
           <div className="generation-summary-grid">
-
             <div>
               <span>Client</span>
-              <strong>{selectedClientName}</strong>
+              <strong>
+                {selectedClient?.report_display_name ||
+                  selectedClient?.client_name ||
+                  "-"}
+              </strong>
             </div>
 
             <div>
               <span>Month</span>
-              <strong>{month}</strong>
+              <strong>{getSelectedMonthName()}</strong>
             </div>
 
             <div>
               <span>Year</span>
-              <strong>{year}</strong>
+              <strong>{getSelectedYear()}</strong>
             </div>
 
             <div>
               <span>Files Uploaded</span>
               <strong>{files.length}</strong>
             </div>
-
           </div>
-
         </Paper>
       )}
 
       {result?.generatedPdfReports?.length > 0 && (
         <Paper className="report-section">
-
           <Typography
             variant="h5"
             className="section-title"
@@ -307,36 +329,39 @@ const ReportPage = () => {
           </Typography>
 
           <div className="generated-report-list">
+            {result.generatedPdfReports.map((report, index) => {
+              const fileName = report.fileName || report.pdf?.fileName;
+              const pdfUrl = `http://localhost:5000/generated-reports/${fileName}`;
 
-          {result.generatedPdfReports.map((report, index) => {
-            const fileName = report.fileName || report.pdf?.fileName;
-            const pdfUrl = `http://localhost:5000/generated-reports/${fileName}`;
+              return (
+                <div
+                  className="generated-report-card"
+                  key={index}
+                >
+                  <div>
+                    <h3>Report {index + 1}</h3>
+                    <p>{fileName}</p>
+                  </div>
 
-          return (
-              <div className="generated-report-card" key={index}>
-                <div>
-                  <h3>Report {index + 1}</h3>
-                  <p>{fileName}</p>
+                  <div className="report-card-actions">
+                    <a
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Preview
+                    </a>
+
+                    <a href={pdfUrl} download>
+                      Download PDF
+                    </a>
+                  </div>
                 </div>
-
-                <div className="report-card-actions">
-                  <a href={pdfUrl} target="_blank" rel="noreferrer">
-                    Preview
-                  </a>
-
-                  <a href={pdfUrl} download>
-                    Download PDF
-                  </a>
-                </div>
-              </div>
-            );
-          })}
-
+              );
+            })}
           </div>
-
         </Paper>
       )}
-
     </div>
   );
 };

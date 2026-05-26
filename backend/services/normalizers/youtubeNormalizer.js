@@ -14,7 +14,11 @@ const cleanNumber = (value) => {
 
 const getValue = (row, possibleKeys = []) => {
   for (const key of possibleKeys) {
-    if (row[key] !== undefined && row[key] !== null && row[key] !== "") {
+    if (
+      row[key] !== undefined &&
+      row[key] !== null &&
+      row[key] !== ""
+    ) {
       return row[key];
     }
   }
@@ -22,46 +26,41 @@ const getValue = (row, possibleKeys = []) => {
   return "";
 };
 
-const facebookNormalizer = (rows = []) => {
+const youtubeNormalizer = (rows = []) => {
   if (!Array.isArray(rows)) return [];
 
   return rows.map((row) => {
     return {
-      postType: getValue(row, [
-        "Post type",
-        "post type",
-        "Content type",
-        "content type",
-        "Type",
-        "type",
-      ]),
-
       title: getValue(row, [
+        "Video title",
+        "video title",
         "Title",
         "title",
-        "Description",
-        "description",
-        "Post",
-        "post",
+        "Video",
+        "video",
       ]),
-
-      reach: cleanNumber(
-        getValue(row, [
-          "Reach",
-          "reach",
-          "Facebook reach",
-          "fb reach",
-          "Page reach",
-        ])
-      ),
 
       views: cleanNumber(
         getValue(row, [
           "Views",
           "views",
-          "Video views",
-          "video views",
-          "Post views",
+        ])
+      ),
+
+      watchTime: cleanNumber(
+        getValue(row, [
+          "Watch time",
+          "watch time",
+          "Watch time (hours)",
+          "watch time (hours)",
+        ])
+      ),
+
+      subscribers: cleanNumber(
+        getValue(row, [
+          "Subscribers",
+          "subscribers",
+          "Subscribers gained",
         ])
       ),
 
@@ -69,8 +68,6 @@ const facebookNormalizer = (rows = []) => {
         getValue(row, [
           "Likes",
           "likes",
-          "Reactions",
-          "reactions",
         ])
       ),
 
@@ -88,21 +85,18 @@ const facebookNormalizer = (rows = []) => {
         ])
       ),
 
-      clicks: cleanNumber(
+      impressions: cleanNumber(
         getValue(row, [
-          "Clicks",
-          "clicks",
-          "Link clicks",
-          "link clicks",
+          "Impressions",
+          "impressions",
         ])
       ),
 
-      engagement: cleanNumber(
+      ctr: cleanNumber(
         getValue(row, [
-          "Engagement",
-          "engagement",
-          "Content interactions",
-          "content interactions",
+          "CTR",
+          "ctr",
+          "Impressions click-through rate",
         ])
       ),
 
@@ -110,7 +104,6 @@ const facebookNormalizer = (rows = []) => {
         "Date",
         "date",
         "Published date",
-        "published date",
       ]),
 
       raw: row,
@@ -118,4 +111,4 @@ const facebookNormalizer = (rows = []) => {
   });
 };
 
-module.exports = facebookNormalizer;
+module.exports = youtubeNormalizer;
