@@ -13,6 +13,7 @@ const drawRecommendationsSection = require("./sections/recommendationsSection");
 const drawComparisonSection = require("./sections/comparisonSection");
 const drawPageFooter = require("../pdf/components/pageFooter");
 const drawFacebookSection = require("./sections/facebookSection");
+const drawYouTubeSection = require("./sections/youtubeSection");
 
 const generateClientPdf = async (reportData) => {
   return new Promise(async(resolve, reject) => {
@@ -45,6 +46,7 @@ const generateClientPdf = async (reportData) => {
       await drawInstagramSection(doc, reportData.instagram, reportData);
       await drawSEOSection(doc, reportData.seo);
       await drawFacebookSection(doc, reportData.facebook, reportData);
+      await drawYouTubeSection(doc, reportData.youtube, reportData);
       drawConclusionSection(doc, reportData);
 
       const range = doc.bufferedPageRange();
