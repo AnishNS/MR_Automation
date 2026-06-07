@@ -14,6 +14,9 @@ const {
 const {
   generateFacebookAnalytics,
 } = require("../services/analytics/facebookAnalytics");
+const {
+  generateYouTubeAnalytics,
+} = require("../services/analytics/youtubeAnalytics");
 
 const { buildCharts } = require("../services/charts/chartBuilder");
 const { assembleReport } = require("../services/reports/reportAssembler");
@@ -142,6 +145,9 @@ const processSingleFile = async (file, selectedClient) => {
   }
   if (platform === "facebook") {
     analytics = generateFacebookAnalytics(normalizedData);
+  }
+  if (platform === "youtube") {
+    analytics = generateYouTubeAnalytics(normalizedData);
   }
 
   const charts = buildCharts(platform, normalizedData);

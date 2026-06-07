@@ -3,6 +3,7 @@ const seoNormalizer = require("./seoNormalizer");
 const genericNormalizer = require("./genericNormalizer");
 const facebookNormalizer = require("./facebookNormalizer");
 const youtubeNormalizer = require("./youtubeNormalizer");
+const metaAdsNormalizer = require("./metaAdsNormalizer");
 
 /*
   Future Normalizers
@@ -10,7 +11,7 @@ const youtubeNormalizer = require("./youtubeNormalizer");
 */
 
 const normalizeMetaAds = (rows) => {
-  return genericNormalizer(rows);
+  return metaAdsNormalizer(rows);
 };
 
 const normalizeGoogleAds = (rows) => {
